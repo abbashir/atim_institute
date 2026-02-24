@@ -1,0 +1,110 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: template_nginx
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./source:/var/www/html/template
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - php
+    networks:
+      - template-network
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - db-volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: template_db
+      MYSQL_USER: template_user
+      MYSQL_PASSWORD: template_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    networks:
+      - template-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db            # Matches the service name of your database
+      PMA_USER: root          # Using root for full access
+      PMA_PASSWORD: root_password  # MUST match MYSQL_ROOT_PASSWORD in the db service
+    depends_on:
+      - db
+    networks:
+      - template-network
+
+  php:
+    build: ./docker/php
+    container_name: template_php
+    volumes:
+      - ./source:/var/www/html/template
+    working_dir: /var/www/html/template
+    restart: unless-stopped
+    stdin_open: true
+    tty: false
+    networks:
+      - template-network
+
+  frontend:
+    image: node:20-alpine
+    container_name: template_frontend
+    volumes:
+      - ./source:/app
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+    restart: unless-stopped
+    networks:
+      - template-network
+
+  composer:
+    image: composer:2
+    container_name: template_composer
+    volumes:
+      - ./source:/var/www/html/template
+    working_dir: /var/www/html/template
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    command: ["init"]
+    depends_on:
+      - php
+    networks:
+      - template-network
+
+  cron:
+    build:
+      context: .
+      dockerfile: ./docker/backend/cron.dockerfile
+    container_name: template_cron
+    volumes:
+      - ./source:/var/www/html/template
+    restart: unless-stopped
+    depends_on:
+      - php
+    networks:
+      - template-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: template_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - template-network
+
+networks:
+  template-network:
+
+volumes:
+  db-volume:
