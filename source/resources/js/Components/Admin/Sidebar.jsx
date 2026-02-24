@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
       label: 'Student',
       subMenu: [
         { label: 'Add New', href: '/admin/students/create' },
-        { label: 'Student List', href: '/admin/student/list' },
+        { label: 'Student List', href: '/admin/students' },
       ]
     },
     {

@@ -92,21 +92,56 @@ class StudentController extends Controller
   }
 
   /**
-   * Update the specified student in storage.
-   */
-  public function update(Request $request, Student $student)
-  {
-    $validated = $request.validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:students,email,' . $student->id,
-        'phone' => 'required|string|max:20',
-        'address' => 'nullable|string',
-      ]);
+ * Update the specified student in storage.
+ */
+public function update(Request $request, Student $student)
+{
+    $validated = $request->validate([
+        // Required Fields
+        'full_name'       => 'required|string|max:255',
+        'gender'          => 'required|in:Male,Female,Other',
+        'date_of_birth'   => 'required|date',
+        'father_name'     => 'required|string|max:255',
+        'mother_name'     => 'required|string|max:255',
+        'present_address'  => 'required|string',
 
+        // Optional Fields
+        'blood_group'     => 'nullable|string',
+        'photo'           => 'nullable|image|max:2048', // Validate as image
+        'class'           => 'nullable|string',
+        'roll_number'     => 'nullable|integer',
+        'academic_year'   => 'nullable|string',
+        'father_phone'    => 'nullable|string',
+        'mother_phone'    => 'nullable|string',
+        'local_guardian_name'    => 'nullable|string',
+        'local_guardian_phone'   => 'nullable|string',
+        'local_guardian_relation'=> 'nullable|string',
+        'local_guardian_address' => 'nullable|string',
+        'permanent_address'      => 'nullable|string',
+        'status'                 => 'required|string',
+    ]);
+
+    // Handle Photo Update
+    if ($request->hasFile('photo')) {
+        // 1. Delete the old photo if it exists
+        if ($student->photo) {
+            Storage::disk('public')->delete($student->photo);
+        }
+        
+        // 2. Store the new photo
+        $validated['photo'] = $request->file('photo')->store('students', 'public');
+    } else {
+        // Ensure we don't overwrite the existing photo path with null 
+        // if no new file was uploaded during this edit.
+        unset($validated['photo']);
+    }
+
+    // Update the record
     $student->update($validated);
 
-    return Redirect::route('admin.students.index')->with('success', 'Student updated successfully.');
-  }
+    return redirect()->route('admin.students.index')
+        ->with('success', 'Student record updated successfully!');
+}
 
   /**
    * Remove the specified student from storage.
