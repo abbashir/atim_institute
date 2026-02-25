@@ -115,10 +115,10 @@ const Sidebar = ({ isOpen, setOpen }) => {
     },
     {
       icon: Receipt,
-      label: 'Cost Management',
+      label: 'Expense Management',
       subMenu: [
-        { label: 'Add New', href: '#' },
-        { label: 'Cost List', href: '#'},
+        { label: 'Add New', href: '/admin/expenses/create' },
+        { label: 'Cost List', href: '/admin/expenses' },
       ]
     },
     {
