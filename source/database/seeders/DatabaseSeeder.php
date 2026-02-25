@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\Admin\ExpenseCategorySeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Admin\Student;
@@ -25,5 +26,8 @@ class DatabaseSeeder extends Seeder
         Student::factory()->count(50)->create();
 
         $this->call(\Database\Seeders\Admin\AdminSeeder::class);
+        $this->call([
+          ExpenseCategorySeeder::class,
+        ]);
     }
 }

@@ -15,12 +15,27 @@ class StudentController extends Controller
   /**
    * Display a listing of students.
    */
-  public function index()
+  public function index(Request $request)
   {
-    $students = Student::latest()->paginate(10);
+    $query = Student::query();
 
-    return Inertia::render('Admin/Students/List', [
-      'students' => $students
+    // Search logic
+    $query->when($request->search, function ($q, $search) {
+      $q->where(function($sub) use ($search) {
+        $sub->where('full_name', 'like', "%{$search}%")
+          ->orWhere('roll_number', 'like', "%{$search}%")
+          ->orWhere('father_name', 'like', "%{$search}%");
+      });
+    });
+
+    // Status logic (Only filter if status is provided and not empty)
+    $query->when($request->status, function ($q, $status) {
+      $q->where('status', $status);
+    });
+
+    return inertia('Admin/Students/List', [
+      'students' => $query->latest()->paginate(10)->withQueryString(),
+      'filters'  => $request->only(['search', 'status'])
     ]);
   }
 
