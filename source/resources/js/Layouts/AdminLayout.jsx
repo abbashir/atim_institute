@@ -3,12 +3,15 @@ import Header from "@/Components/Admin/Header.jsx";
 import Sidebar from "@/Components/Admin/Sidebar.jsx";
 import Breadcrumb from "@/Components/Admin/Breadcrumb.jsx";
 import {Head} from "@inertiajs/react";
+import { Toaster } from 'react-hot-toast';
 
 const AdminLayout = ({ children, pageName}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+        {/* Global Toaster for Notifications */}
+        <Toaster />
       <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} />
 
       <div className="flex flex-1 flex-col overflow-hidden">

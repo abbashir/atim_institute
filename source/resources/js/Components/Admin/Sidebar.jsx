@@ -98,17 +98,17 @@ const Sidebar = ({ isOpen, setOpen }) => {
     },
     {
       icon: HeartHandshake,
-      label: 'Donation Management',
+      label: 'Donor Management',
       subMenu: [
-        { label: 'Add Donor', href: '#' },
-        { label: 'Donor List', href: '#'},
+        { label: 'Add Donor', href: '/admin/donors/create' },
+        { label: 'Donor List', href: '/admin/donors' },
       ]
     },
-    {
+    { 
       icon: Wallet,
-      label: 'Collection Management',
+      label: 'Donation Management',
       subMenu: [
-        { label: 'Monthly Collection', href: '#' },
+        { label: 'Monthly Collection', href: '/admin/donations/monthly' },
         { label: 'On Time Collection', href: '#'},
         { label: 'Collection History', href: '#'},
       ]
@@ -118,7 +118,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
       label: 'Expense Management',
       subMenu: [
         { label: 'Add New', href: '/admin/expenses/create' },
-        { label: 'Cost List', href: '/admin/expenses' },
+        { label: 'Expense List', href: '/admin/expenses' },
       ]
     },
     {
@@ -145,7 +145,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
                 <LayoutGrid size={24} fill="currentColor" />
               </div>
-              <span className="text-2xl font-bold text-[#1C2434]">TailAdmin</span>
+              <span className="text-2xl font-bold text-[#1C2434]">Darus Salam</span>
             </div>
             <button onClick={() => setOpen(false)} className="lg:hidden text-slate-400">
               <X size={20} />

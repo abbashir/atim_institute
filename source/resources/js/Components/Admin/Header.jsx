@@ -64,7 +64,7 @@ const Header = ({ setSidebarOpen }) => {
             className="flex items-center gap-3 focus:outline-none group"
           >
             <div className="text-right hidden md:block">
-              <p className="text-sm font-bold text-[#1C2434] leading-tight">Musharof</p>
+              <p className="text-sm font-bold text-[#1C2434] leading-tight">Ashikullah</p>
               <p className="text-xs text-slate-500 font-medium">Administrator</p>
             </div>
 

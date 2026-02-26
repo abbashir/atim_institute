@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\DonorController;
+use App\Http\Controllers\Admin\DonationController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -33,6 +35,12 @@ Route::prefix('admin')->as('admin.')->group(function () {
          */
         Route::resource('students', StudentController::class);
         Route::resource('expenses', ExpenseController::class);
+        Route::resource('donors', DonorController::class);
+
+
+        // Donation Management Routes
+        Route::get('donations/monthly', [DonationController::class, 'index'])->name('donations.monthly');
+        Route::post('donations/monthly/store-payment', [DonationController::class, 'monthlyDonationStore'])->name('donations.monthly.store');
 
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     });

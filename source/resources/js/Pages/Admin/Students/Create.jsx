@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Save, User, BookOpen, MapPin, Users, ChevronDown } from 'lucide-react';
+import { success, error } from '@/Utils/Notify';
 
 const Create = () => {
   const { data, setData, post, processing, errors } = useForm({
@@ -36,12 +37,20 @@ const Create = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
+    
     post(route('admin.students.store'), {
-      forceFormData: true,
+        forceFormData: true,
+        onSuccess: () => {
+          success("Student added successfully!");
+        },
+        onError: (errors) => {
+          error("Please fix the errors and try again.");
+            console.log("Validation failed:", errors);
+        },
     });
-  };
+};
 
   return (
     <AdminLayout pageName="Add New Student">
