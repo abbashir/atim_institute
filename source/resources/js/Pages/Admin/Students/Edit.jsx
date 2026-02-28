@@ -3,6 +3,8 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Save, User, BookOpen, MapPin, Users, ChevronDown, ArrowLeft } from 'lucide-react';
 import { Link } from '@inertiajs/react';
+import InputField from "@/Components/Form/InputField.jsx";
+import SelectField from "@/Components/Form/SelectField.jsx";
 
 const Edit = ({ student }) => {
   // Initialize form with existing student data
@@ -174,43 +176,4 @@ const Edit = ({ student }) => {
     </AdminLayout>
   );
 };
-
-// ... Reusable InputField and SelectField components (Same as Create.jsx)
-/** Reusable Input Field **/
-const InputField = ({ label, required, type = "text", error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <input
-      type={type}
-      {...props}
-      className={`w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-indigo-600 active:border-indigo-600 disabled:cursor-default disabled:bg-slate-50 ${error ? 'border-rose-500' : 'border-slate-200'}`}
-    />
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
-
-/** Reusable Select Field **/
-const SelectField = ({ label, required, options, error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <div className="relative z-20 bg-transparent">
-      <select
-        {...props}
-        className={`relative z-20 w-full appearance-none rounded border py-3 px-5 outline-none transition focus:border-indigo-600 active:border-indigo-600 bg-transparent ${error ? 'border-rose-500' : 'border-slate-200'}`}
-      >
-        {options.map((opt, i) => (
-          <option key={i} value={opt.value}>{opt.label}</option>
-        ))}
-      </select>
-      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-slate-400 pointer-events-none">
-        <ChevronDown size={20} />
-      </span>
-    </div>
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
 export default Edit;

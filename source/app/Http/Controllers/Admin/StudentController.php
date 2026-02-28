@@ -12,32 +12,38 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
-  /**
-   * Display a listing of students.
-   */
-  public function index(Request $request)
-  {
-    $query = Student::query();
+    /**
+     * Display a listing of students.
+     */
+    public function index(Request $request)
+    {
+      $query = Student::query();
 
-    // Search logic
-    $query->when($request->search, function ($q, $search) {
-      $q->where(function($sub) use ($search) {
-        $sub->where('full_name', 'like', "%{$search}%")
-          ->orWhere('roll_number', 'like', "%{$search}%")
-          ->orWhere('father_name', 'like', "%{$search}%");
+      // 1. Determine items per page (default to 10)
+      $perPage = $request->input('per_page', 10);
+
+      // 2. Search logic
+      $query->when($request->search, function ($q, $search) {
+        $q->where(function($sub) use ($search) {
+          $sub->where('full_name', 'like', "%{$search}%")
+            ->orWhere('roll_number', 'like', "%{$search}%")
+            ->orWhere('father_name', 'like', "%{$search}%");
+        });
       });
-    });
 
-    // Status logic (Only filter if status is provided and not empty)
-    $query->when($request->status, function ($q, $status) {
-      $q->where('status', $status);
-    });
+      // 3. Status logic
+      $query->when($request->status, function ($q, $status) {
+        $q->where('status', $status);
+      });
 
-    return inertia('Admin/Students/List', [
-      'students' => $query->latest()->paginate(10)->withQueryString(),
-      'filters'  => $request->only(['search', 'status'])
-    ]);
-  }
+      return inertia('Admin/Students/List', [
+        // Use the $perPage variable here
+        'students' => $query->latest()->paginate($perPage)->withQueryString(),
+
+        // Pass per_page back so the dropdown in React stays synced
+        'filters'  => $request->only(['search', 'status', 'per_page'])
+      ]);
+    }
 
   /**
    * Show the form for creating a new student.

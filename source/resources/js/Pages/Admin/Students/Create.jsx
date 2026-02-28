@@ -3,6 +3,9 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Save, User, BookOpen, MapPin, Users, ChevronDown } from 'lucide-react';
 import { success, error } from '@/Utils/Notify';
+import InputField from "@/Components/Form/InputField.jsx";
+import SelectField from "@/Components/Form/SelectField.jsx";
+import TextareaField from "@/Components/Form/TextareaField.jsx";
 
 const Create = () => {
   const { data, setData, post, processing, errors } = useForm({
@@ -134,7 +137,7 @@ const handleSubmit = (e) => {
             </div>
             <div className="p-7 space-y-4">
               <InputField label="Class" value={data.class} onChange={e => setData('class', e.target.value)} error={errors.class} placeholder="Enter Class" />
-              <InputField label="Roll Number" type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} />
+              <InputField label="Roll Number" type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} placeholder="Enter Roll no" />
               <SelectField
                 label="Academic Year"
                 value={data.academic_year}
@@ -153,10 +156,10 @@ const handleSubmit = (e) => {
               <h3 className="font-medium text-[#1C2434]">Guardian Info</h3>
             </div>
             <div className="p-7 space-y-4">
-              <InputField label="Father's Name" required value={data.father_name} onChange={e => setData('father_name', e.target.value)} error={errors.father_name} />
-              <InputField label="Father's Phone" value={data.father_phone} onChange={e => setData('father_phone', e.target.value)} />
-              <InputField label="Mother's Name" required value={data.mother_name} onChange={e => setData('mother_name', e.target.value)} error={errors.mother_name} />
-              <InputField label="Mother's Phone" value={data.mother_phone} onChange={e => setData('mother_phone', e.target.value)} />
+              <InputField label="Father's Name" required value={data.father_name} onChange={e => setData('father_name', e.target.value)} error={errors.father_name} placeholder="Enter father name" />
+              <InputField label="Father's Phone" value={data.father_phone} onChange={e => setData('father_phone', e.target.value)} placeholder="Enter phone no" />
+              <InputField label="Mother's Name" required value={data.mother_name} onChange={e => setData('mother_name', e.target.value)} error={errors.mother_name} placeholder="Enter mother name" />
+              <InputField label="Mother's Phone" value={data.mother_phone} onChange={e => setData('mother_phone', e.target.value)} placeholder="Enter phone no" />
             </div>
           </div>
         </div>
@@ -168,18 +171,14 @@ const handleSubmit = (e) => {
             <h3 className="font-medium text-[#1C2434]">Address Information</h3>
           </div>
           <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="mb-2.5 block text-black font-medium">
-                Present Address <span className="text-rose-500">*</span>
-              </label>
-              <textarea
-                rows="4"
-                className={`w-full rounded border-[1.5px] py-3 px-5 outline-none transition focus:border-indigo-600 ${errors.present_address ? 'border-rose-500' : 'border-slate-200'}`}
-                value={data.present_address}
-                onChange={e => setData('present_address', e.target.value)}
-              ></textarea>
-              {errors.present_address && <p className="mt-1 text-xs text-rose-500">{errors.present_address}</p>}
-            </div>
+            <TextareaField
+              label="Present Address"
+              required
+              placeholder="Enter present address"
+              value={data.present_address}
+              onChange={e => setData('present_address', e.target.value)}
+              error={errors.present_address}
+            />
 
             <div>
               <div className="mb-2.5 flex items-center justify-between">
@@ -189,13 +188,14 @@ const handleSubmit = (e) => {
                   Same as Present
                 </label>
               </div>
-              <textarea
-                rows="4"
+
+              <TextareaField
+                placeholder="Enter permanent address"
                 disabled={data.same_as_present}
-                className={`w-full rounded border-[1.5px] border-slate-200 py-3 px-5 outline-none transition focus:border-indigo-600 ${data.same_as_present ? 'bg-slate-50 opacity-70' : ''}`}
                 value={data.permanent_address}
                 onChange={e => setData('permanent_address', e.target.value)}
-              ></textarea>
+                error={errors.permanent_address}
+              />
             </div>
           </div>
         </div>
@@ -215,43 +215,5 @@ const handleSubmit = (e) => {
     </AdminLayout>
   );
 };
-
-/** Reusable Input Field with Asterisk Support **/
-const InputField = ({ label, required, type = "text", error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <input
-      type={type}
-      {...props}
-      className={`w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-indigo-600 active:border-indigo-600 disabled:cursor-default disabled:bg-slate-50 ${error ? 'border-rose-500' : 'border-slate-200'}`}
-    />
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
-
-/** Reusable Select Field with Asterisk Support **/
-const SelectField = ({ label, required, options, error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <div className="relative z-20 bg-transparent">
-      <select
-        {...props}
-        className={`relative z-20 w-full appearance-none rounded border py-3 px-5 outline-none transition focus:border-indigo-600 active:border-indigo-600 bg-transparent ${error ? 'border-rose-500' : 'border-slate-200'}`}
-      >
-        {options.map((opt, i) => (
-          <option key={i} value={opt.value} disabled={opt.disabled}>{opt.label}</option>
-        ))}
-      </select>
-      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-slate-400 pointer-events-none">
-        <ChevronDown size={20} />
-      </span>
-    </div>
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
 
 export default Create;

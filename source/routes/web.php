@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Inertia\Inertia;
@@ -41,6 +43,18 @@ Route::prefix('admin')->as('admin.')->group(function () {
         // Donation Management Routes
         Route::get('donations/monthly', [DonationController::class, 'index'])->name('donations.monthly');
         Route::post('donations/monthly/store-payment', [DonationController::class, 'monthlyDonationStore'])->name('donations.monthly.store');
+
+        Route::get('donations/on-time', [DonationController::class, 'OnTimeDonation'])->name('donations.on-time');
+        Route::post('donations/on-time/store-payment', [DonationController::class, 'storeOnTimeDonation'])->name('donations.on-time.store');
+
+        // Donation Summary Route
+        Route::get('donations/summary', [DonationController::class, 'DonationSummary'])->name('donations.summary');
+
+
+        Route::get('reports/donations', [ReportController::class, 'donationReport'])->name('reports.donations');
+        Route::get('reports/expenses', [ReportController::class, 'expenseReport'])->name('reports.expenses');
+
+        Route::get('settings', [SettingsController::class, 'settings'])->name('settings.index');
 
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     });

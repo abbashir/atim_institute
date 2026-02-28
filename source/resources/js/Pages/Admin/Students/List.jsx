@@ -2,16 +2,23 @@ import React, {useState} from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import Pagination from "@/Components/Admin/Common/Pagination.jsx";
+import {error, success} from "@/Utils/Notify.js";
 
 const Index = ({ students, filters }) => {
   // Local state for the input field
   const [searchValue, setSearchValue] = useState(filters.search || '');
 
   // Helper function to update filters
+  // Inside your Index component:
   const updateFilters = (newSearch, newStatus) => {
     router.get(
       route('admin.students.index'),
-      { search: newSearch, status: newStatus },
+      {
+        search: newSearch,
+        status: newStatus,
+        per_page: filters.per_page // Keep current per_page setting
+      },
       { preserveState: true, replace: true }
     );
   };
@@ -31,7 +38,25 @@ const Index = ({ students, filters }) => {
   };
   const handleDelete = (id) => {
     if (confirm('Are you sure you want to delete this student?')) {
-      router.delete(route('admin.students.destroy', id));
+      router.delete(route('admin.students.destroy', id), {
+        // Prevents the page from jumping back to the top after deletion
+        preserveScroll: true,
+
+        onBefore: () => {
+          // You could trigger a 'Deleting...' loading state here
+        },
+
+        onSuccess: () => {
+          // Trigger your global success toast
+          success("Student record deleted successfully.");
+        },
+
+        onError: (errors) => {
+          // Handle cases like 'Student cannot be deleted because of linked records'
+          error("Failed to delete. This student may have active enrollments.");
+          console.error(errors);
+        },
+      });
     }
   };
 
@@ -148,44 +173,7 @@ const Index = ({ students, filters }) => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="flex flex-col gap-4 border-t border-slate-200 bg-white px-4 md:px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-
-          {/* Left Side: Status Text (Centered on mobile, left-aligned on desktop) */}
-          <div className="text-center text-sm text-slate-500 sm:text-left">
-            Showing <span className="font-medium text-slate-700">{students.from}</span> to{' '}
-            <span className="font-medium text-slate-700">{students.to}</span> of{' '}
-            <span className="font-medium text-slate-700">{students.total}</span> entries
-          </div>
-
-          {/* Right Side: Navigation Buttons */}
-          <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
-            {students.links.map((link, index) => {
-              // Logic to hide page numbers on very small screens to prevent row wrapping
-              // Only show "Previous", "Next", and the "Active" page on mobile if the list is long
-              const isMobileHidden =
-                !link.active &&
-                link.label !== '&laquo; Previous' &&
-                link.label !== 'Next &raquo;' &&
-                index !== 1 && // Always show first page
-                index !== students.links.length - 2; // Always show last page
-
-              return (
-                <Link
-                  key={index}
-                  href={link.url || '#'}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                  className={`flex h-9 min-w-[36px] items-center justify-center rounded-md border px-3 text-sm font-medium transition-all
-            ${link.active
-                    ? 'z-10 bg-indigo-600 border-indigo-600 text-white shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-indigo-300'}
-            ${!link.url ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}
-            ${isMobileHidden ? 'hidden md:flex' : 'flex'} 
-          `}
-                />
-              );
-            })}
-          </div>
-        </div>
+        <Pagination data={students} filters={filters} />
       </div>
     </AdminLayout>
   );

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Donor extends Model
 {
-    // ... other code
+    protected $guarded = ['id'];
 
     public function donations(): HasMany
     {
