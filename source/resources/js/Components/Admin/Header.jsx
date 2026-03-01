@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { router, usePage } from '@inertiajs/react';
 import {
   Menu, Search, Bell, Moon, ChevronDown,
   UserCircle, Settings, LifeBuoy, LogOut
@@ -7,6 +8,10 @@ import {
 const Header = ({ setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  // Get the auth user from shared props
+  const { auth } = usePage().props;
+  const user = auth.user;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -18,6 +23,11 @@ const Header = ({ setSidebarOpen }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    router.post(route('admin.logout')); // Triggers the Laravel destroy method
+  };
 
   return (
     <header className="sticky top-0 z-30 flex h-20 w-full items-center bg-white px-4 md:px-8 border-b border-slate-100 shadow-sm">
@@ -64,7 +74,7 @@ const Header = ({ setSidebarOpen }) => {
             className="flex items-center gap-3 focus:outline-none group"
           >
             <div className="text-right hidden md:block">
-              <p className="text-sm font-bold text-[#1C2434] leading-tight">Ashikullah</p>
+              <p className="text-sm font-bold text-[#1C2434] leading-tight">{user.name}</p>
               <p className="text-xs text-slate-500 font-medium">Administrator</p>
             </div>
 
@@ -87,8 +97,8 @@ const Header = ({ setSidebarOpen }) => {
             <div className="absolute right-0 mt-4 w-64 rounded-xl border border-slate-100 bg-white py-2 shadow-2xl shadow-slate-200/50">
               {/* Header inside dropdown */}
               <div className="px-5 py-3 border-b border-slate-50">
-                <p className="text-sm font-bold text-[#1C2434]">Musharof Chowdhury</p>
-                <p className="text-xs text-slate-400">randomuser@pimjo.com</p>
+                <p className="text-sm font-bold text-[#1C2434]">{user.name}</p>
+                <p className="text-xs text-slate-400">{user.email}</p>
               </div>
 
               {/* Menu Links */}
@@ -97,19 +107,17 @@ const Header = ({ setSidebarOpen }) => {
                   <UserCircle size={20} strokeWidth={1.5} />
                   Edit profile
                 </a>
-                <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                <a href={route('admin.password.update')}
+
+                   className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
                   <Settings size={20} strokeWidth={1.5} />
                   Account settings
-                </a>
-                <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
-                  <LifeBuoy size={20} strokeWidth={1.5} />
-                  Support
                 </a>
               </div>
 
               {/* Sign out button */}
               <div className="mt-1 border-t border-slate-50 p-2">
-                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-colors">
+                <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-colors">
                   <LogOut size={20} strokeWidth={1.5} />
                   Sign out
                 </button>

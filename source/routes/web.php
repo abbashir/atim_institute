@@ -56,6 +56,10 @@ Route::prefix('admin')->as('admin.')->group(function () {
 
         Route::get('settings', [SettingsController::class, 'settings'])->name('settings.index');
 
+        // Separate routes for Account Settings
+        Route::get('/password/update', [AuthenticatedSessionController::class, 'passwordUpdatePage'])->name('password.update');
+        Route::put('/password/update', [AuthenticatedSessionController::class, 'updatePassword'])->name('password.update.store');
+
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     });
 });

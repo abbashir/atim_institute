@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -50,6 +52,31 @@ class AuthenticatedSessionController extends Controller
     $request->session()->regenerate();
 
     return redirect()->intended(route('admin.dashboard'));
+  }
+
+  /**
+   * Show the password change page
+   */
+  public function passwordUpdatePage()
+  {
+    return Inertia::render('Admin/Settings/PasswordUpdate');
+  }
+
+  /**
+   * Update the admin's password
+   */
+  public function updatePassword(Request $request)
+  {
+    $validated = $request->validate([
+      'current_password' => ['required', 'current_password:admin'],
+      'password' => ['required', Password::defaults(), 'confirmed'],
+    ]);
+
+    $request->user('admin')->update([
+      'password' => Hash::make($validated['password']),
+    ]);
+
+    return back()->with('success', 'Password changed successfully.');
   }
 
   /**

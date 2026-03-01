@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureAdmin
 {
-    if (!auth('admin')->check()) {
-        return redirect()->route('admin.login');
-    }
-
-    return $next($request);
+//    if (!auth('admin')->check()) {
+//        return redirect()->route('admin.login');
+//    }
+//
+//    return $next($request);
 }
