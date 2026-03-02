@@ -2,6 +2,9 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Save, Receipt, ArrowLeft, ChevronDown } from 'lucide-react';
+import InputField from "@/Components/Form/InputField.jsx";
+import SelectField from "@/Components/Form/SelectField.jsx";
+import {error, success} from "@/Utils/Notify.js";
 
 const Edit = ({ expense, categories }) => {
   const { data, setData, post, processing, errors } = useForm({
@@ -19,9 +22,19 @@ const Edit = ({ expense, categories }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // We use post() because of the _method: 'put' trick for files
+
     post(route('admin.expenses.update', expense.id), {
       forceFormData: true,
+      onSuccess: (page) => {
+        // Check if the backend sent a success message
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+      },
+      onError: (errors) => {
+        // Display a notification if validation fails or file size is too large
+        error("Failed to update expense. Please check the form.");
+      },
     });
   };
 
@@ -146,31 +159,5 @@ const Edit = ({ expense, categories }) => {
     </AdminLayout>
   );
 };
-
-/* Reusable Components (Keep these at bottom) */
-const InputField = ({ label, required, type = "text", error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium text-sm">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <input type={type} {...props} className={`w-full rounded border-[1.5px] bg-transparent py-3 px-5 outline-none transition focus:border-indigo-600 ${error ? 'border-rose-500' : 'border-slate-200'}`} />
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
-
-const SelectField = ({ label, required, options, error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium text-sm">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <div className="relative">
-      <select {...props} className={`w-full appearance-none rounded border py-3 px-5 outline-none transition focus:border-indigo-600 bg-transparent ${error ? 'border-rose-500' : 'border-slate-200'}`}>
-        {options.map((opt, i) => <option key={i} value={opt.value} disabled={opt.disabled}>{opt.label}</option>)}
-      </select>
-      <span className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 pointer-events-none"><ChevronDown size={18} /></span>
-    </div>
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
 
 export default Edit;

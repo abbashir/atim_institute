@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Expense;
 use App\Models\Admin\ExpenseCategory;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +60,7 @@ public function index(Request $request)
     /**
      * Store a newly created expense.
      */
-    public function store(Request $request)
+    public function store(Request $request, ImageService $imageService)
     {
         $validated = $request->validate([
             'expense_date'   => 'required|date',
@@ -74,7 +75,7 @@ public function index(Request $request)
         ]);
 
         if ($request->hasFile('attachment')) {
-            $validated['attachment'] = $request->file('attachment')->store('expenses', 'public');
+          $validated['attachment'] = $imageService->upload($request->file('attachment'), 'expenses');
         }
 
         // Set the creator automatically
@@ -111,7 +112,7 @@ public function index(Request $request)
     ]);
 }
 
-public function update(Request $request, Expense $expense)
+public function update(Request $request, Expense $expense, ImageService $imageService)
 {
     $validated = $request->validate([
         'expense_date'   => 'required|date',
@@ -125,13 +126,8 @@ public function update(Request $request, Expense $expense)
         'status'         => 'required|in:Pending,Approved,Rejected',
     ]);
 
-    if ($request->hasFile('attachment')) {
-        // Delete old file if exists
-        if ($expense->attachment) {
-            Storage::disk('public')->delete($expense->attachment);
-        }
-        $validated['attachment'] = $request->file('attachment')->store('expenses', 'public');
-    }
+    // photo update method call
+    $validated = $imageService->handleUpdate($validated, $request, 'attachment', 'expenses', $expense->attachment);
 
     $expense->update($validated);
 
@@ -141,11 +137,13 @@ public function update(Request $request, Expense $expense)
     /**
      * Remove the specified expense and its attachment.
      */
-    public function destroy(Expense $expense)
+    public function destroy(Expense $expense, ImageService $imageService)
     {
+        // 1. Delete the physical file from storage using the service
         if ($expense->attachment) {
-            Storage::disk('public')->delete($expense->attachment);
+          $imageService->delete($expense->attachment);
         }
+
         
         $expense->delete();
         return back()->with('success', 'Expense deleted.');

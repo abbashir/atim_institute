@@ -2,6 +2,10 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Save, UserPlus, ArrowLeft, ChevronDown } from 'lucide-react';
+import {DONOR_TYPES} from "@/Constants/index.js";
+import InputField from "@/Components/Form/InputField.jsx";
+import SelectField from "@/Components/Form/SelectField.jsx";
+import {error, success} from "@/Utils/Notify.js";
 
 const Edit = ({ donor }) => {
   // Pre-fill the form with existing donor data
@@ -17,7 +21,18 @@ const Edit = ({ donor }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    put(route('admin.donors.update', donor.id));
+
+    put(route('admin.donors.update', donor.id), {
+      onSuccess: (page) => {
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+      },
+      onError: (validationErrors) => {
+        // Use the aliased name here
+        error("Update failed. Please check the form.");
+      },
+    });
   };
 
   return (
@@ -48,20 +63,6 @@ const Edit = ({ donor }) => {
               error={errors.full_name}
             />
 
-            {/* Donor Type */}
-            <SelectField
-              label="Donor Type"
-              required
-              value={data.donor_type}
-              onChange={e => setData('donor_type', e.target.value)}
-              error={errors.donor_type}
-              options={[
-                { label: 'Monthly', value: 'Monthly' },
-                { label: 'Yearly', value: 'Yearly' },
-                { label: 'One-time', value: 'One-time' },
-              ]}
-            />
-
             {/* Phone */}
             <InputField
               label="Phone Number"
@@ -89,6 +90,16 @@ const Edit = ({ donor }) => {
               value={data.donation_amount}
               onChange={e => setData('donation_amount', e.target.value)}
               error={errors.donation_amount}
+            />
+
+            {/* Donor Type */}
+            <SelectField
+              label="Donor Type"
+              required
+              value={data.donor_type}
+              onChange={e => setData('donor_type', e.target.value)}
+              error={errors.donor_type}
+              options={DONOR_TYPES}
             />
 
             {/* Status */}
@@ -141,42 +152,5 @@ const Edit = ({ donor }) => {
     </AdminLayout>
   );
 };
-
-/* Reusable Components */
-const InputField = ({ label, required, type = "text", error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium text-sm">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <input 
-      type={type} 
-      {...props} 
-      className={`w-full rounded border-[1.5px] bg-transparent py-3 px-5 outline-none transition focus:border-indigo-600 ${error ? 'border-rose-500' : 'border-slate-200'}`} 
-    />
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
-
-const SelectField = ({ label, required, options, error, ...props }) => (
-  <div className="w-full">
-    <label className="mb-2.5 block text-black font-medium text-sm">
-      {label} {required && <span className="text-rose-500">*</span>}
-    </label>
-    <div className="relative">
-      <select 
-        {...props} 
-        className={`w-full appearance-none rounded border py-3 px-5 outline-none transition focus:border-indigo-600 bg-transparent ${error ? 'border-rose-500' : 'border-slate-200'}`}
-      >
-        {options.map((opt, i) => (
-          <option key={i} value={opt.value}>{opt.label}</option>
-        ))}
-      </select>
-      <span className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 pointer-events-none">
-        <ChevronDown size={18} />
-      </span>
-    </div>
-    {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-  </div>
-);
 
 export default Edit;

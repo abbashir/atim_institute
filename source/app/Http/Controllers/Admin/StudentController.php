@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Student;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
@@ -56,7 +57,7 @@ class StudentController extends Controller
   /**
    * Store a newly created student in storage.
    */
-  public function store(Request $request)
+  public function store(Request $request, ImageService $imageService)
   {
     $validated = $request->validate([
       // Required Fields
@@ -72,7 +73,7 @@ class StudentController extends Controller
       'photo'           => 'nullable|image|max:2048',
       'class'           => 'nullable|string',
       'roll_number'     => 'nullable|integer',
-      'academic_year'   => 'nullable|string',
+      'school'   => 'nullable|string',
       'father_phone'    => 'nullable|string',
       'mother_phone'    => 'nullable|string',
       'local_guardian_name'    => 'nullable|string',
@@ -84,7 +85,7 @@ class StudentController extends Controller
     ]);
 
     if ($request->hasFile('photo')) {
-      $validated['photo'] = $request->file('photo')->store('students', 'public');
+      $validated['photo'] = $imageService->upload($request->file('photo'), 'students');
     }
 
     Student::create($validated);
@@ -115,7 +116,7 @@ class StudentController extends Controller
   /**
  * Update the specified student in storage.
  */
-public function update(Request $request, Student $student)
+public function update(Request $request, Student $student, ImageService $imageService)
 {
     $validated = $request->validate([
         // Required Fields
@@ -131,7 +132,7 @@ public function update(Request $request, Student $student)
         'photo'           => 'nullable|image|max:2048', // Validate as image
         'class'           => 'nullable|string',
         'roll_number'     => 'nullable|integer',
-        'academic_year'   => 'nullable|string',
+        'school'   => 'nullable|string',
         'father_phone'    => 'nullable|string',
         'mother_phone'    => 'nullable|string',
         'local_guardian_name'    => 'nullable|string',
@@ -142,20 +143,8 @@ public function update(Request $request, Student $student)
         'status'                 => 'required|string',
     ]);
 
-    // Handle Photo Update
-    if ($request->hasFile('photo')) {
-        // 1. Delete the old photo if it exists
-        if ($student->photo) {
-            Storage::disk('public')->delete($student->photo);
-        }
-        
-        // 2. Store the new photo
-        $validated['photo'] = $request->file('photo')->store('students', 'public');
-    } else {
-        // Ensure we don't overwrite the existing photo path with null 
-        // if no new file was uploaded during this edit.
-        unset($validated['photo']);
-    }
+    // photo update method call
+    $validated = $imageService->handleUpdate($validated, $request, 'photo', 'students', $student->photo);
 
     // Update the record
     $student->update($validated);
@@ -167,10 +156,17 @@ public function update(Request $request, Student $student)
   /**
    * Remove the specified student from storage.
    */
-  public function destroy(Student $student)
+  public function destroy(Student $student, ImageService $imageService)
   {
+    // 1. Delete the physical file from storage using the service
+    if ($student->photo) {
+      $imageService->delete($student->photo);
+    }
+
+    // 2. Delete the database record
     $student->delete();
 
-    return Redirect::route('admin.students.index')->with('success', 'Student deleted successfully.');
+    return Redirect::route('admin.students.index')
+      ->with('success', 'Student and their photo deleted successfully.');
   }
 }

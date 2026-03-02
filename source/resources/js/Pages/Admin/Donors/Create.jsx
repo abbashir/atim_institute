@@ -2,6 +2,10 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Save, UserPlus, ArrowLeft, ChevronDown } from 'lucide-react';
+import SelectField from "@/Components/Form/SelectField.jsx";
+import InputField from "@/Components/Form/InputField.jsx";
+import {DONOR_TYPES} from "@/Constants/index.js";
+import {error, success} from "@/Utils/Notify.js";
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -14,10 +18,22 @@ export default function Create() {
         status: 'Active',
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        post(route('admin.donors.store'));
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    post(route('admin.donors.store'), {
+      onSuccess: (page) => {
+        // Check if the backend sent a success flash message
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+      },
+      onError: (errors) => {
+        // Show a generic error message if validation fails
+        error("Operation failed. Please check the form.");
+      },
+    });
+  };
 
     return (
         <AdminLayout pageName="Add New Donor">
@@ -86,11 +102,7 @@ export default function Create() {
                             value={data.donor_type}
                             onChange={e => setData('donor_type', e.target.value)}
                             error={errors.donor_type}
-                            options={[
-                                { label: 'Monthly', value: 'Monthly' },
-                                { label: 'Yearly', value: 'Yearly' },
-                                { label: 'One-time', value: 'One-time' },
-                            ]}
+                            options={DONOR_TYPES}
                         />
 
                         {/* Status */}
@@ -144,40 +156,3 @@ export default function Create() {
         </AdminLayout>
     );
 }
-
-/* Reusable Components */
-const InputField = ({ label, required, type = "text", error, ...props }) => (
-    <div className="w-full">
-        <label className="mb-2.5 block text-black font-medium text-sm">
-            {label} {required && <span className="text-rose-500">*</span>}
-        </label>
-        <input 
-            type={type} 
-            {...props} 
-            className={`w-full rounded border-[1.5px] bg-transparent py-3 px-5 outline-none transition focus:border-indigo-600 ${error ? 'border-rose-500' : 'border-slate-200'}`} 
-        />
-        {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-    </div>
-);
-
-const SelectField = ({ label, required, options, error, ...props }) => (
-    <div className="w-full">
-        <label className="mb-2.5 block text-black font-medium text-sm">
-            {label} {required && <span className="text-rose-500">*</span>}
-        </label>
-        <div className="relative">
-            <select 
-                {...props} 
-                className={`w-full appearance-none rounded border py-3 px-5 outline-none transition focus:border-indigo-600 bg-transparent ${error ? 'border-rose-500' : 'border-slate-200'}`}
-            >
-                {options.map((opt, i) => (
-                    <option key={i} value={opt.value} disabled={opt.disabled}>{opt.label}</option>
-                ))}
-            </select>
-            <span className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 pointer-events-none">
-                <ChevronDown size={18} />
-            </span>
-        </div>
-        {error && <p className="mt-1 text-xs text-rose-500">{error}</p>}
-    </div>
-);

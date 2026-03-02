@@ -16,7 +16,7 @@ const Create = () => {
     photo: null,
     class: '',
     roll_number: '',
-    academic_year: '2025-2026',
+    school: '',
     father_name: '',
     father_phone: '',
     mother_name: '',
@@ -138,15 +138,11 @@ const handleSubmit = (e) => {
             <div className="p-7 space-y-4">
               <InputField label="Class" value={data.class} onChange={e => setData('class', e.target.value)} error={errors.class} placeholder="Enter Class" />
               <InputField label="Roll Number" type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} placeholder="Enter Roll no" />
-              <SelectField
-                label="Academic Year"
-                value={data.academic_year}
-                onChange={e => setData('academic_year', e.target.value)}
-                options={[
-                  { label: '2024-2025', value: '2024-2025' },
-                  { label: '2025-2026', value: '2025-2026' },
-                ]}
-              />
+              <InputField label="School Name"
+                          value={data.school}
+                          onChange={e => setData('school', e.target.value)}
+                          error={errors.school}
+                          placeholder="Enter school name" />
             </div>
           </div>
 

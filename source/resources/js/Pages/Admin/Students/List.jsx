@@ -141,7 +141,7 @@ const Index = ({ students, filters }) => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-slate-700">{student.class}</p>
-                      <p className="text-xs text-slate-500 text-nowrap">Roll: {student.roll_number} ({student.academic_year})</p>
+                      <p className="text-xs text-slate-500 text-nowrap">Roll: {student.roll_number} ({student.school})</p>
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <p className="text-slate-700">{student.father_name}</p>

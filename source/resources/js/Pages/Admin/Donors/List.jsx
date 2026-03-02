@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, User, Phone, MapPin, Heart } from 'lucide-react';
+import {error, success} from "@/Utils/Notify.js";
 
 const Index = ({ donors, filters }) => {
   // Local state for search input
@@ -32,7 +33,18 @@ const Index = ({ donors, filters }) => {
 
   const handleDelete = (id) => {
     if (confirm('Are you sure you want to delete this donor? This action cannot be undone.')) {
-      router.delete(route('admin.donors.destroy', id));
+      router.delete(route('admin.donors.destroy', id), {
+        preserveScroll: true,
+        onSuccess: (page) => {
+          // If your AdminLayout isn't already watching flash, call it here:
+          if (page.props.flash.success) {
+            success(page.props.flash.success);
+          }
+        },
+        onError: () => {
+          error("Failed to delete donor. They may have related records.");
+        },
+      });
     }
   };
 

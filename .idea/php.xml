@@ -98,11 +98,8 @@
       <path value="$PROJECT_DIR$/source/vendor/kreait/firebase-php" />
       <path value="$PROJECT_DIR$/source/vendor/ta-tikoma/phpunit-architecture-test" />
       <path value="$PROJECT_DIR$/source/vendor/league/flysystem" />
-      <path value="$PROJECT_DIR$/source/vendor/intervention/image-laravel" />
       <path value="$PROJECT_DIR$/source/vendor/league/uri-interfaces" />
-      <path value="$PROJECT_DIR$/source/vendor/intervention/image" />
       <path value="$PROJECT_DIR$/source/vendor/nesbot/carbon" />
-      <path value="$PROJECT_DIR$/source/vendor/intervention/gif" />
       <path value="$PROJECT_DIR$/source/vendor/predis/predis" />
       <path value="$PROJECT_DIR$/source/vendor/tijsverkoyen/css-to-inline-styles" />
       <path value="$PROJECT_DIR$/source/vendor/league/mime-type-detection" />
@@ -191,6 +188,9 @@
       <path value="$PROJECT_DIR$/source/vendor/symfony/polyfill-php84" />
       <path value="$PROJECT_DIR$/source/vendor/tightenco/ziggy" />
       <path value="$PROJECT_DIR$/source/vendor/laravel/breeze" />
+      <path value="$PROJECT_DIR$/source/vendor/intervention/gif" />
+      <path value="$PROJECT_DIR$/source/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/source/vendor/intervention/image-laravel" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

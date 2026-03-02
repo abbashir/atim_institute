@@ -20,7 +20,7 @@ return new class extends Migration
       // --- Academic Information ---
       $table->string('class')->nullable(); // Optional
       $table->integer('roll_number')->nullable(); // Optional
-      $table->string('academic_year')->nullable(); // Optional
+      $table->string('school')->nullable(); // Optional
 
       // --- Guardian Information ---
       $table->string('father_name'); // Required

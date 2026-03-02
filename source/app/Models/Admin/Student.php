@@ -27,7 +27,7 @@ class Student extends Model
     // Academic Info
     'class',
     'roll_number',
-    'academic_year',
+    'school',
 
     // Guardian Info
     'father_name',

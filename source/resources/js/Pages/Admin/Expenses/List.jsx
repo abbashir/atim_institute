@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, Receipt, Calendar, CreditCard } from 'lucide-react';
+import {error, success} from "@/Utils/Notify.js";
 
 const Index = ({ expenses, filters }) => {
   // Local state for search input
@@ -31,8 +32,19 @@ const Index = ({ expenses, filters }) => {
   };
 
   const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this expense record?')) {
-      router.delete(route('admin.expenses.destroy', id));
+    if (confirm('Are you sure you want to delete this expense record? ')) {
+      router.delete(route('admin.expenses.destroy', id), {
+        preserveScroll: true,
+        onSuccess: (page) => {
+          // Trigger manual success if no global listener exists
+          if (page.props.flash.success) {
+            success(page.props.flash.success);
+          }
+        },
+        onError: () => {
+          error("Failed to delete the expense. It might be linked to other records.");
+        },
+      });
     }
   };
 

@@ -20,7 +20,7 @@ class StudentFactory extends Factory
             
             'class' => $this->faker->randomElement(['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5']),
             'roll_number' => $this->faker->unique()->numberBetween(1, 100),
-            'academic_year' => '2025-2026',
+            'school' => 'International school',
 
             'father_name' => $this->faker->name('male'),
             'father_phone' => $this->faker->phoneNumber(),

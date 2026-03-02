@@ -5,6 +5,7 @@ import { Save, User, BookOpen, MapPin, Users, ChevronDown, ArrowLeft } from 'luc
 import { Link } from '@inertiajs/react';
 import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
+import {error, success} from "@/Utils/Notify.js";
 
 const Edit = ({ student }) => {
   // Initialize form with existing student data
@@ -17,7 +18,7 @@ const Edit = ({ student }) => {
     photo: null, // Files start as null
     class: student.class || '',
     roll_number: student.roll_number || '',
-    academic_year: student.academic_year || '2025-2026',
+    school: student.school || '',
     father_name: student.father_name || '',
     father_phone: student.father_phone || '',
     mother_name: student.mother_name || '',
@@ -43,9 +44,20 @@ const Edit = ({ student }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // We use 'post' with _method: 'put' because standard 'put' doesn't support file uploads in PHP
+
     post(route('admin.students.update', student.id), {
       forceFormData: true,
+      onSuccess: (page) => {
+        // Access the flash message from the shared props
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+      },
+      onError: (errors) => {
+        // Trigger error notification if validation fails
+        error("Update failed. Please check the form for errors.");
+        console.log(errors);
+      },
     });
   };
 
@@ -117,9 +129,11 @@ const Edit = ({ student }) => {
             <div className="p-7 space-y-4">
               <InputField label="Class" value={data.class} onChange={e => setData('class', e.target.value)} error={errors.class} />
               <InputField label="Roll Number" type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} />
-              <SelectField label="Academic Year" value={data.academic_year} onChange={e => setData('academic_year', e.target.value)}
-                options={[{ label: '2024-2025', value: '2024-2025' }, { label: '2025-2026', value: '2025-2026' }]}
-              />
+              <InputField label="School Name"
+                          value={data.school}
+                          onChange={e => setData('school', e.target.value)}
+                          error={errors.school}
+                          placeholder="Enter school name" />
             </div>
           </div>
 

@@ -74,15 +74,9 @@ export default function Summary({ summary, donors, individualData, filters }) {
                 <Zap size={18} className="text-amber-500" />
                 <h3 className="font-bold text-slate-700">On-Time Donation (This Month)</h3>
               </div>
-              <div className="p-6 flex flex-col items-center justify-center h-full gap-4">
-                <div className="text-center">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Quantity</p>
-                  <p className="text-3xl font-black text-slate-800">{summary.ontime_qty}</p>
-                </div>
-                <div className="text-center border-t border-slate-100 pt-4 w-full">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Amount</p>
-                  <p className="text-3xl font-black text-amber-600">{summary.ontime_amt} <span className="text-sm">BDT</span></p>
-                </div>
+              <div className="p-6 space-y-4">
+                <StatItem label="Quantity" value={`${summary.ontime_qty}`} />
+                <StatItem label="Collection Amount" value={`${summary.ontime_amt} BDT`} color="text-emerald-600" />
               </div>
             </div>
           </div>

@@ -48,7 +48,7 @@ const Show = ({ student }) => {
                 {student.blood_group || 'N/A'}
               </span>
               <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-600">
-                {student.academic_year}
+                {student.school}
               </span>
             </div>
           </div>
@@ -87,7 +87,7 @@ const Show = ({ student }) => {
               <DetailItem label="Blood Group" value={student.blood_group} />
               <DetailItem label="Class" value={student.class} />
               <DetailItem label="Roll Number" value={student.roll_number} />
-              <DetailItem label="Academic Year" value={student.academic_year} />
+              <DetailItem label="Academic Year" value={student.school} />
               <DetailItem label="Status" value={student.status} highlight={student.status === 'Active'} />
             </div>
           </div>

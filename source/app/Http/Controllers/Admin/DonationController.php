@@ -151,7 +151,7 @@ public function monthlyDonationStore(Request $request)
   public function DonationSummary(Request $request)
   {
     $currentMonthName = now()->format('F');
-    $currentMonthYear = now()->format('F Y');
+    $currentMonthYear = now()->format('Y');
     $currentYear = now()->format('Y');
 
     // --- Stats Calculation ---
@@ -159,7 +159,8 @@ public function monthlyDonationStore(Request $request)
     $totalMonthlyCount = $monthlyDonors->count();
     $expectedMonthlyAmount = $monthlyDonors->sum('donation_amount');
 
-    $paidRecords = Donation::where('payment_month', $currentMonthYear)->get();
+    $paidRecords = Donation::where('payment_month', $currentMonthName)->where('payment_year', $currentMonthYear)->get();
+
     $paidMonthlyCount = $paidRecords->pluck('donor_id')->unique()->count();
     $paidMonthlyAmount = $paidRecords->sum('amount');
 
