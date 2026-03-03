@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 class StudentController extends Controller
@@ -88,7 +89,14 @@ class StudentController extends Controller
       $validated['photo'] = $imageService->upload($request->file('photo'), 'students');
     }
 
-    Student::create($validated);
+    // 2. Inject the logged-in user ID
+    $dataToSave = array_merge($validated, [
+            'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
+        ]);
+
+        // dd($dataToSave);
+
+    Student::create($dataToSave);
 
     return redirect()->route('admin.students.index')->with('success', 'Student created!');
   }

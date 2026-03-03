@@ -73,8 +73,14 @@ public function monthlyDonationStore(Request $request)
             ]);
         }
 
+        // 3. Manually Inject System Data
+        $dataToSave = array_merge($validated, [
+            'paid_at'    => Carbon::now(),     // Matches created_at timestamp
+            'created_by' => Auth::id(),        // Logged in user ID
+        ]);
+
         // 3. Create the Record
-        Donation::create($validated);
+        Donation::create($dataToSave);
 
         DB::commit();
 

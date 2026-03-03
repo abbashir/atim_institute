@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('donation_amount', 12, 2)->default(0.00); 
             $table->string('donor_type');
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }

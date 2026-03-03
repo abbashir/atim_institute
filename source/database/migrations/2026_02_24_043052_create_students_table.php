@@ -42,6 +42,8 @@ return new class extends Migration
       // --- Status ---
       $table->string('status')->default('Active'); // Default 'Active'
 
+      $table->unsignedBigInteger('created_by');
+
       $table->timestamps();
     });
   }

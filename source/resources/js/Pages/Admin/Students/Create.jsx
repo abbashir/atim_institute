@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { Save, User, BookOpen, MapPin, Users, ChevronDown } from 'lucide-react';
 import { success, error } from '@/Utils/Notify';
 import InputField from "@/Components/Form/InputField.jsx";
@@ -197,7 +197,10 @@ const handleSubmit = (e) => {
         </div>
 
         <div className="flex justify-end gap-4 pb-10">
-          <button type="button" className="rounded-lg border border-slate-200 px-8 py-3 font-medium text-slate-600 hover:bg-slate-50 transition-all">Cancel</button>
+          <Link href={route('admin.students.index')} 
+                className="rounded-lg border border-slate-200 px-8 py-3 font-medium text-slate-600 hover:bg-slate-50 transition-all">
+              Cancel
+          </Link>
           <button
             disabled={processing}
             type="submit"

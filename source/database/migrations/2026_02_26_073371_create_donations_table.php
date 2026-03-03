@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('donations', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('donor_id');
             $table->decimal('amount', 12, 2);
             $table->string('payment_month'); // e.g., "March 2026"
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->date('paid_at');
             $table->string('payment_method')->default('Cash');
             $table->string('receipt_no')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }

@@ -37,6 +37,7 @@ class StudentFactory extends Factory
             'same_as_present' => $sameAsPresent,
 
             'status' => $this->faker->randomElement(['Active', 'Inactive']),
+            'created_by' => $this->faker->randomNumber(),
         ];
     }
 }

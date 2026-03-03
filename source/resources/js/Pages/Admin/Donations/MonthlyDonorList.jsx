@@ -217,11 +217,6 @@ const MonthlyDonorList = ({ donors, filters }) => {
                                     />
                                     {errors.amount && <p className="text-rose-500 text-xs mt-1">{errors.amount}</p>}
                                 </div>
-                                
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Payment Date</label>
-                                    <input type="date" value={data.paid_at} onChange={e => setData('paid_at', e.target.value)} className="w-full rounded-lg border-slate-200 text-sm" />
-                                </div>
 
                                 <div>
                                     <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Method</label>
@@ -231,12 +226,14 @@ const MonthlyDonorList = ({ donors, filters }) => {
                                         <option value="Bank">Bank</option>
                                     </select>
                                 </div>
-                            </div>
 
-                            <div>
+                                <div>
                                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Receipt No (Optional)</label>
                                 <input type="text" value={data.receipt_no} onChange={e => setData('receipt_no', e.target.value)} placeholder="Enter receipt ID" className="w-full rounded-lg border-slate-200 text-sm" />
                             </div>
+                            </div>
+
+                            
 
                             <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 shadow-lg flex items-center justify-center gap-2 transition">
                                 {processing ? 'Processing...' : <><CreditCard size={18} /> Confirm Payment</>}
