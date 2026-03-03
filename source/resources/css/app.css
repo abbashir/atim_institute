@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+    /* Exact footer gradient from design specification */
+    .gradient-emerald {
+        background: linear-gradient(
+                135deg,
+                hsl(155 60% 15%),
+                hsl(155 60% 28%),
+                hsl(155 50% 35%)
+        );
+    }
+
+    /* Primary background with 95% opacity (hardcoded) */
+    .bg-primary {
+        background-color: hsl(155deg 60% 28% / 0.95);
+    }
+
+    .bg-cream-dark {
+        background-color: hsl(150 18% 88%);
+    }
+
+    .bg-cream-light {
+        background-color: hsl(150 30% 94%);
+    }
+}
