@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Helpers\DateFormat;
 use App\Models\Admin\Donor;
 use App\Http\Controllers\Controller;
@@ -14,90 +15,97 @@ use Carbon\Carbon;
 
 class DonationController extends Controller
 {
-    public function index(Request $request)
-{
+  public function index(Request $request)
+  {
     // Set Initial Defaults
-    $month  = $request->input('month', date('F'));
-    $year   = $request->input('year', date('Y'));
+    $month = $request->input('month', date('F'));
+    $year = $request->input('year', date('Y'));
     $status = $request->input('payment_status', 'unpaid'); // Initial state: unpaid
     $search = $request->input('search', '');
 
     $query = Donor::where('status', 'Active')->where('donor_type', 'Monthly');
 
     if ($search) {
-        $query->where(function($q) use ($search) {
-            $q->where('full_name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%");
-        });
+      $query->where(function ($q) use ($search) {
+        $q->where('full_name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%");
+      });
     }
 
     if ($status === 'paid') {
-        $query->whereHas('donations', fn($q) => $q->where('payment_month', $month)->where('payment_year', $year));
+      $query->whereHas('donations', fn($q) => $q->where('payment_month', $month)->where('payment_year', $year));
     } elseif ($status === 'unpaid') {
-        $query->whereDoesntHave('donations', fn($q) => $q->where('payment_month', $month)->where('payment_year', $year));
+      $query->whereDoesntHave('donations', fn($q) => $q->where('payment_month', $month)->where('payment_year', $year));
     }
 
     $donors = $query->withExists(['donations as has_paid' => fn($q) => $q->where('payment_month', $month)->where('payment_year', $year)])
-                    ->latest()->paginate(10)->withQueryString();
+      ->latest()->paginate(10)->withQueryString();
 
     return Inertia::render('Admin/Donations/MonthlyDonorList', [
-        'donors' => $donors,
-        'filters' => ['search' => $search, 'month' => $month, 'year' => $year, 'payment_status' => $status]
+      'donors' => $donors,
+      'filters' => ['search' => $search, 'month' => $month, 'year' => $year, 'payment_status' => $status]
     ]);
-}
+  }
 
-/**
- * Store a newly created donation in storage.
- */
-public function monthlyDonationStore(Request $request, SmsService $smsService)
-{
+  /**
+   * Store a newly created donation in storage.
+   */
+  public function monthlyDonationStore(Request $request, SmsService $smsService)
+  {
     // 1. Validation
     $validated = $request->validate([
-        'donor_id'       => 'required|exists:donors,id',
-        'amount'         => 'required|numeric|min:1',
-        'payment_month'  => 'required|string',
-        'payment_year'   => 'required|string',
-        'paid_at'        => 'required|date',
-        'payment_method' => 'required|string',
-        'receipt_no'     => 'nullable|string|max:100',
+      'donor_id' => 'required|exists:donors,id',
+      'amount' => 'required|numeric|min:1',
+      'payment_month' => 'required|string',
+      'payment_year' => 'required|string',
+      'paid_at' => 'required|date',
+      'payment_method' => 'required|string',
+      'receipt_no' => 'nullable|string|max:100',
     ]);
 
     try {
-        DB::beginTransaction();
+      DB::beginTransaction();
 
-        // 2. Double-Check for existing payment (Prevent Duplicates)
-        $exists = Donation::where('donor_id', $validated['donor_id'])
-            ->where('payment_month', $validated['payment_month'])
-            ->where('payment_year', $validated['payment_year'])
-            ->exists();
+      // 2. Double-Check for existing payment (Prevent Duplicates)
+      $exists = Donation::where('donor_id', $validated['donor_id'])
+        ->where('payment_month', $validated['payment_month'])
+        ->where('payment_year', $validated['payment_year'])
+        ->exists();
 
-        if ($exists) {
-            return redirect()->back()->withErrors([
-                'amount' => "A payment for {$validated['payment_month']} {$validated['payment_year']} has already been recorded for this donor."
-            ]);
-        }
-
-        // 3. Manually Inject System Data
-        $dataToSave = array_merge($validated, [
-            'paid_at'    => Carbon::now(),     // Matches created_at timestamp
-            'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
+      if ($exists) {
+        return redirect()->back()->withErrors([
+          'amount' => "A payment for {$validated['payment_month']} {$validated['payment_year']} has already been recorded for this donor."
         ]);
+      }
 
-        // 3. Create the Record
-       Donation::create($dataToSave);
+      // 3. Manually Inject System Data
+      $dataToSave = array_merge($validated, [
+        'paid_at' => Carbon::now(),     // Matches created_at timestamp
+        'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
+      ]);
 
-        DB::commit();
+      // 3. Create the Record
+      //Donation::create($dataToSave);
 
-        // 4. Redirect with Success Message
-        return redirect()->back()->with('success', 'Donation recorded successfully!');
+      /*Send SMS*/
+      if (true){
+        return redirect()->route('admin.donations.monthly')
+          ->with('error', 'Donor created fffffff.');
+      }
+
+      DB::commit();
+
+      // 4. Redirect with Success Message
+      return redirect()->back()->with('success', 'Donation recorded successfully!');
 
     } catch (\Exception $e) {
-        DB::rollBack();
+      DB::rollBack();
 
-        return redirect()->back()->withErrors([
-            'amount' => 'Something went wrong while saving the donation. Please try again.'
-        ]);
+      return redirect()->back()->withErrors([
+        'amount' => 'Something went wrong while saving the donation. Please try again.'
+      ]);
     }
-}
+  }
+
   public function OnTimeDonation()
   {
     return Inertia::render('Admin/Donations/OnTimeDonation');
@@ -107,15 +115,15 @@ public function monthlyDonationStore(Request $request, SmsService $smsService)
   {
     $validated = $request->validate([
       // Donor Identity
-      'full_name'      => 'required|string|max:255',
-      'phone'          => 'required|string|max:20',
-      'email'          => 'nullable|email',
-      'address'        => 'required|string',
+      'full_name' => 'required|string|max:255',
+      'phone' => 'required|string|max:20',
+      'email' => 'nullable|email',
+      'address' => 'required|string',
       // Payment Details
-      'amount'         => 'required|numeric|min:1',
-      'paid_at'        => 'required|date',
+      'amount' => 'required|numeric|min:1',
+      'paid_at' => 'required|date',
       'payment_method' => 'required|string',
-      'receipt_no'     => 'nullable|string|max:50',
+      'receipt_no' => 'nullable|string|max:50',
     ]);
 
     try {
@@ -125,24 +133,24 @@ public function monthlyDonationStore(Request $request, SmsService $smsService)
         $donor = Donor::firstOrCreate(
           ['phone' => $validated['phone']],
           [
-            'full_name'       => $validated['full_name'],
-            'email'           => $validated['email'],
-            'address'         => $validated['address'],
-            'donor_type'      => 'On-time', // Hard-coded default
-            'status'          => 'Active',  // Hard-coded default
+            'full_name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'address' => $validated['address'],
+            'donor_type' => 'On-time', // Hard-coded default
+            'status' => 'Active',  // Hard-coded default
             'donation_amount' => 0,      // Initial amount 0 as requested
             'created_by' => Auth::guard('admin')->id(),
           ]
         );
 
         Donation::create([
-          'donor_id'       => $donor->id,
-          'amount'         => $validated['amount'],
-          'paid_at'        => Carbon::now(),
+          'donor_id' => $donor->id,
+          'amount' => $validated['amount'],
+          'paid_at' => Carbon::now(),
           'payment_method' => $validated['payment_method'],
-          'receipt_no'     => $validated['receipt_no'],
-          'created_by'     => Auth::guard('admin')->id(),
-          'is_on_time'     => true,
+          'receipt_no' => $validated['receipt_no'],
+          'created_by' => Auth::guard('admin')->id(),
+          'is_on_time' => true,
         ]);
 
         return redirect()->route('admin.donations.summary')->with('success', 'Donation recorded successfully!');
@@ -192,7 +200,7 @@ public function monthlyDonationStore(Request $request, SmsService $smsService)
     // --- Individual Summary Logic ---
     $individualData = null;
     if ($request->donor_id) {
-      $donor = Donor::with(['donations' => function($q) use ($currentYear) {
+      $donor = Donor::with(['donations' => function ($q) use ($currentYear) {
         $q->where('payment_year', $currentYear)->orderBy('paid_at', 'desc');
       }])->findOrFail($request->donor_id);
 

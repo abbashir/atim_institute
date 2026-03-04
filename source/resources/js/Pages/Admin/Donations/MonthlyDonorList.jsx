@@ -69,11 +69,14 @@ const MonthlyDonorList = ({donors, filters}) => {
   const submitPayment = (e) => {
     e.preventDefault();
     post(route('admin.donations.monthly.store'), {
-      onSuccess: () => {
+      onSuccess: (page) => {
         closeModal();
-        // You don't even need to call success() here if you set up
-        // the listener in step 3, but you can if you want:
-        success("Payment recorded successfully!");
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+        if (page.props.flash.error) {
+          error(page.props.flash.error);
+        }
       },
       onError: () => {
         error("Please fix the errors and try again.");
