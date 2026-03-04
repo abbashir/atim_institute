@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('donor_id');
             $table->decimal('amount', 12, 2);
-            $table->string('payment_month'); // e.g., "March 2026"
-            $table->string('payment_year');
+            $table->string('payment_month')->nullable(); // e.g., "March"
+            $table->string('payment_year')->nullable();
             $table->date('paid_at');
             $table->string('payment_method')->default('Cash');
             $table->string('receipt_no')->nullable();
             $table->unsignedBigInteger('created_by');
+            $table->boolean('is_on_time')->default(false);
             $table->timestamps();
         });
     }

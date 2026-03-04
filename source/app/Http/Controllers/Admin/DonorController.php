@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Donor;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DonorController extends Controller
@@ -19,6 +22,9 @@ class DonorController extends Controller
     {
         // 1. Initialize the query
         $query = Donor::query();
+
+      // 1. Determine items per page (default to 10)
+      $perPage = $request->input('per_page', 10);
 
         // 2. Search Filter (Name, Phone, or Email)
         if ($request->filled('search')) {
@@ -38,7 +44,7 @@ class DonorController extends Controller
 
         // 4. Get Paginated Results
         $donors = $query->latest()
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString(); // Crucial: Keeps search/status filters in pagination links
 
         // 5. Return to Inertia View
@@ -65,9 +71,27 @@ class DonorController extends Controller
             'status'          => 'required|in:Active,Inactive',
         ]);
 
-        Donor::create($validated);
+      try {
+        // 1. Merge the authenticated admin ID
+        $data = array_merge($validated, [
+          'created_by' => Auth::guard('admin')->id()
+        ]);
 
-        return redirect()->route('admin.donors.index')->with('success', 'Donor created successfully.');
+        // 2. Attempt to create the Donor
+        Donor::create($data);
+
+        return redirect()->route('admin.donors.index')
+          ->with('success', 'Donor created successfully.');
+
+      } catch (Exception $e) {
+        // 3. Log the technical error for the developer
+        Log::error("Donor Creation Failed: " . $e->getMessage());
+
+        // 4. Return to the form with an error message and the user's input preserved
+        return back()
+          ->withInput()
+          ->with('error', 'Failed to create donor. Please try again.');
+      }
     }
 
     public function edit(Donor $donor)

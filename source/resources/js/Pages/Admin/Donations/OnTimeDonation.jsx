@@ -65,7 +65,6 @@ export default function OnTimeDonation() {
           </div>
           <div className="p-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <InputField label="Amount" type="number" required placeholder="0.00" value={data.amount} onChange={e => setData('amount', e.target.value)} error={errors.amount} />
-            <InputField label="Payment Date" type="date" required value={data.paid_at} onChange={e => setData('paid_at', e.target.value)} error={errors.paid_at} />
             <SelectField
               label="Payment Method" required value={data.payment_method} onChange={e => setData('payment_method', e.target.value)} error={errors.payment_method}
               options={[{label: 'Cash', value: 'Cash'}, {label: 'Bank', value: 'Bank'}, {label: 'Bkash', value: 'Bkash'}, {label: 'Nagad', value: 'Nagad'}]}

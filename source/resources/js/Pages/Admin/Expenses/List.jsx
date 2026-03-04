@@ -3,6 +3,8 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, Receipt, Calendar, CreditCard } from 'lucide-react';
 import {error, success} from "@/Utils/Notify.js";
+import {formatAmount} from "@/Utils/format.js";
+import Pagination from "@/Components/Admin/Common/Pagination.jsx";
 
 const Index = ({ expenses, filters }) => {
   // Local state for search input
@@ -122,10 +124,10 @@ const Index = ({ expenses, filters }) => {
                       <div className="flex flex-col">
                         <span className="font-semibold text-slate-900 flex items-center gap-1.5">
                            <Calendar size={14} className="text-slate-400" />
-                           {new Date(expense.expense_date).toLocaleDateString('en-GB')}
+                           {expense.expense_date}
                         </span>
                         <span className="text-xs font-medium text-indigo-600 mt-0.5">
-                           {expense.category?.name || 'Uncategorized'}
+                           {expense.category_name || 'Uncategorized'}
                         </span>
                       </div>
                     </td>
@@ -134,7 +136,7 @@ const Index = ({ expenses, filters }) => {
                       <p className="text-xs text-slate-500 mt-1 uppercase font-semibold">Ref: {expense.reference_no || '---'}</p>
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-slate-900">
-                       {parseFloat(expense.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {formatAmount(expense.amount)}
                     </td>
                     <td className="px-6 py-4">
                        <div className="flex items-center gap-2 text-slate-600">
@@ -172,28 +174,7 @@ const Index = ({ expenses, filters }) => {
         </div>
 
         {/* Pagination Footer (Reusing your logic) */}
-        <div className="flex flex-col gap-4 border-t border-slate-200 bg-white px-4 md:px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-center text-sm text-slate-500 sm:text-left">
-            Showing <span className="font-medium text-slate-700">{expenses.from}</span> to{' '}
-            <span className="font-medium text-slate-700">{expenses.to}</span> of{' '}
-            <span className="font-medium text-slate-700">{expenses.total}</span> entries
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
-            {expenses.links.map((link, index) => (
-              <Link
-                key={index}
-                href={link.url || '#'}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-                className={`flex h-9 min-w-[36px] items-center justify-center rounded-md border px-3 text-sm font-medium transition-all
-                  ${link.active ? 'z-10 bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-indigo-300'}
-                  ${!link.url ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}
-                  ${!link.active && link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;' && index !== 1 && index !== expenses.links.length - 2 ? 'hidden md:flex' : 'flex'} 
-                `}
-              />
-            ))}
-          </div>
-        </div>
+        <Pagination data={expenses} filters={filters} routeName="admin.expenses.index" />
       </div>
     </AdminLayout>
   );

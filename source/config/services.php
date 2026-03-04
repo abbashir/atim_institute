@@ -34,5 +34,11 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'bulksms' => [
+      'api_key'     => env('BULKSMS_API_KEY'),
+      'sender_id'   => env('BULKSMS_SENDER_ID'),
+      'base_url'    => env('BULKSMS_BASE_URL'),
+      'balance_url' => env('BULKSMS_BALANCE_URL'),
+    ],
 
 ];

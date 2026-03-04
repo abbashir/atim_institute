@@ -27,6 +27,9 @@ export default function Create() {
         if (page.props.flash.success) {
           success(page.props.flash.success);
         }
+        if (page.props.flash.error) {
+          error(page.props.flash.error);
+        }
       },
       onError: (errors) => {
         // Show a generic error message if validation fails

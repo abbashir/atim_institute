@@ -11,15 +11,7 @@ class Donation extends Model
 {
     // If your table name is 'donations', Laravel finds it automatically.
     // We define the fillable fields based on your schema.
-    protected $fillable = [
-        'donor_id',
-        'amount',
-        'payment_month',
-        'payment_year',
-        'paid_at',
-        'payment_method',
-        'receipt_no',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * Relationship back to the Donor

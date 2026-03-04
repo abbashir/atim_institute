@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Edit, User, Phone, Mail, MapPin, CreditCard, Calendar, Activity } from 'lucide-react';
+import {formatAmount} from "@/Utils/format.js";
 
 const Show = ({ donor }) => {
   return (
@@ -51,7 +52,7 @@ const Show = ({ donor }) => {
               <p className="text-indigo-100 text-sm font-medium">Monthly Commitment</p>
             </div>
             <h2 className="text-3xl font-bold">
-              {parseFloat(donor.donation_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {formatAmount(donor.donation_amount)}
               <span className="text-sm ml-2 font-normal text-indigo-200">BDT</span>
             </h2>
           </div>

@@ -2,12 +2,12 @@ import React from 'react';
 import { Link, router } from '@inertiajs/react';
 import { ChevronDown } from 'lucide-react';
 
-const Pagination = ({ data, filters }) => {
+const Pagination = ({ data, filters, routeName }) => {
   const { links, from, to, total, per_page } = data;
 
   const handlePerPageChange = (e) => {
     router.get(
-      route('admin.students.index'),
+      route(routeName),
       { ...filters, per_page: e.target.value, page: 1 }, // Reset to page 1 when changing quantity
       { preserveState: true, replace: true }
     );

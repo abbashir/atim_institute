@@ -39,21 +39,29 @@ const Create = () => {
       permanent_address: checked ? prev.present_address : '',
     }));
   };
-
-const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     post(route('admin.students.store'), {
-        forceFormData: true,
-        onSuccess: () => {
-          success("Student added successfully!");
-        },
-        onError: (errors) => {
-          error("Please fix the errors and try again.");
-            console.log("Validation failed:", errors);
-        },
+      forceFormData: true,
+      onSuccess: (page) => {
+        // 1. Check if the server sent a 'success' flash message
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+
+        // 2. Check if the server sent an 'error' flash message (from your try-catch)
+        if (page.props.flash.error) {
+          error(page.props.flash.error);
+        }
+      },
+      onError: (errors) => {
+        // This triggers for validation errors (422 Unprocessable Entity)
+        error("Please fix the highlighted errors.");
+        console.log("Validation failed:", errors);
+      },
     });
-};
+  };
 
   return (
     <AdminLayout pageName="Add New Student">

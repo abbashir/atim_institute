@@ -173,7 +173,7 @@ const Index = ({ students, filters }) => {
         </div>
 
         {/* Pagination Footer */}
-        <Pagination data={students} filters={filters} />
+        <Pagination data={students} filters={filters} routeName="admin.students.index" />
       </div>
     </AdminLayout>
   );

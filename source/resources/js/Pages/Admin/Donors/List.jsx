@@ -3,6 +3,8 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, User, Phone, MapPin, Heart } from 'lucide-react';
 import {error, success} from "@/Utils/Notify.js";
+import {formatAmount} from "@/Utils/format.js";
+import Pagination from "@/Components/Admin/Common/Pagination.jsx";
 
 const Index = ({ donors, filters }) => {
   // Local state for search input
@@ -143,7 +145,7 @@ const Index = ({ donors, filters }) => {
                     <td className="px-6 py-4 text-right">
                        <div className="flex flex-col items-end">
                           <span className="font-bold text-slate-900 flex items-center gap-1">
-                            {parseFloat(donor.donation_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            {formatAmount(donor.donation_amount)}
                           </span>
                           <span className="text-[10px] text-slate-400 uppercase">Fixed Amount</span>
                        </div>
@@ -174,28 +176,7 @@ const Index = ({ donors, filters }) => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="flex flex-col gap-4 border-t border-slate-200 bg-white px-4 md:px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-center text-sm text-slate-500 sm:text-left">
-            Showing <span className="font-medium text-slate-700">{donors.from || 0}</span> to{' '}
-            <span className="font-medium text-slate-700">{donors.to || 0}</span> of{' '}
-            <span className="font-medium text-slate-700">{donors.total}</span> entries
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
-            {donors.links.map((link, index) => (
-              <Link
-                key={index}
-                href={link.url || '#'}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-                className={`flex h-9 min-w-[36px] items-center justify-center rounded-md border px-3 text-sm font-medium transition-all
-                  ${link.active ? 'z-10 bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-indigo-300'}
-                  ${!link.url ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}
-                  ${!link.active && link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;' && index !== 1 && index !== donors.links.length - 2 ? 'hidden md:flex' : 'flex'} 
-                `}
-              />
-            ))}
-          </div>
-        </div>
+        <Pagination data={donors} filters={filters} routeName="admin.donors.index" />
       </div>
     </AdminLayout>
   );

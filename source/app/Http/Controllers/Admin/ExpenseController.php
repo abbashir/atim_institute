@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\DateFormat;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Expense;
 use App\Models\Admin\ExpenseCategory;
@@ -20,6 +21,9 @@ public function index(Request $request)
     // 1. Start the query with the category relationship
     $query = Expense::with('category');
 
+    // 1. Determine items per page (default to 10)
+    $perPage = $request->input('per_page', 10);
+
     // 2. Apply Search Filter (Search by paid_to or reference_no)
     if ($request->filled('search')) {
         $search = $request->input('search');
@@ -37,8 +41,19 @@ public function index(Request $request)
 
     // 4. Get Paginated Results
     $expenses = $query->latest()
-        ->paginate(10)
-        ->withQueryString(); // Keeps filters in pagination links
+        ->paginate($perPage)
+        ->withQueryString()
+        ->through(fn ($expense) => [
+          'id' => $expense->id,
+          'expense_date' => DateFormat::CustomDate($expense->expense_date), // Formats to "04 March 2026"
+          'category_name' => $expense->category?->name,
+          'amount' => $expense->amount,
+          'paid_to' => $expense->paid_to,
+          'reference_no' => $expense->reference_no,
+          'payment_method' => $expense->payment_method,
+          'status' => $expense->status,
+          'created_at' => DateFormat::CustomDateTime($expense->created_at), // "04 March 2026, 02:02 PM"
+        ]);
 
     // 5. Render View with Data and current Filters
     return Inertia::render('Admin/Expenses/List', [
@@ -79,7 +94,7 @@ public function index(Request $request)
         }
 
         // Set the creator automatically
-        $validated['created_by'] = auth()->id();
+        $validated['created_by'] = Auth::guard('admin')->id();
 
         Expense::create($validated);
 

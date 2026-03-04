@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+use App\Helpers\DateFormat;
 use App\Models\Admin\Donor;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Donation;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -45,7 +48,7 @@ class DonationController extends Controller
 /**
  * Store a newly created donation in storage.
  */
-public function monthlyDonationStore(Request $request)
+public function monthlyDonationStore(Request $request, SmsService $smsService)
 {
     // 1. Validation
     $validated = $request->validate([
@@ -76,11 +79,11 @@ public function monthlyDonationStore(Request $request)
         // 3. Manually Inject System Data
         $dataToSave = array_merge($validated, [
             'paid_at'    => Carbon::now(),     // Matches created_at timestamp
-            'created_by' => Auth::id(),        // Logged in user ID
+            'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
         ]);
 
         // 3. Create the Record
-        Donation::create($dataToSave);
+       Donation::create($dataToSave);
 
         DB::commit();
 
@@ -89,7 +92,7 @@ public function monthlyDonationStore(Request $request)
 
     } catch (\Exception $e) {
         DB::rollBack();
-        
+
         return redirect()->back()->withErrors([
             'amount' => 'Something went wrong while saving the donation. Please try again.'
         ]);
@@ -127,27 +130,22 @@ public function monthlyDonationStore(Request $request)
             'address'         => $validated['address'],
             'donor_type'      => 'On-time', // Hard-coded default
             'status'          => 'Active',  // Hard-coded default
-            'donation_amount' => 0.00,      // Initial amount 0 as requested
+            'donation_amount' => 0,      // Initial amount 0 as requested
+            'created_by' => Auth::guard('admin')->id(),
           ]
         );
-
-        // 2. Insert into donation table using the donor_id
-        $date = Carbon::parse($validated['paid_at']);
 
         Donation::create([
           'donor_id'       => $donor->id,
           'amount'         => $validated['amount'],
-          'payment_month'  => $date->format('F Y'),
-          'payment_year'   => $date->format('Y'),
-          'paid_at'        => $validated['paid_at'],
+          'paid_at'        => Carbon::now(),
           'payment_method' => $validated['payment_method'],
-          'receipt_no'     => $validated['receipt_no'] ?? 'REC-' . strtoupper(uniqid()),
+          'receipt_no'     => $validated['receipt_no'],
+          'created_by'     => Auth::guard('admin')->id(),
+          'is_on_time'     => true,
         ]);
 
-        // Optional: If you want the donor's donation_amount to reflect the sum:
-        $donor->increment('donation_amount', $validated['amount']);
-
-        return redirect()->back()->with('success', 'Donation recorded successfully!');
+        return redirect()->route('admin.donations.summary')->with('success', 'Donation recorded successfully!');
       });
     } catch (\Exception $e) {
       return redirect()->back()->with('error', 'Process failed: ' . $e->getMessage());
@@ -157,7 +155,6 @@ public function monthlyDonationStore(Request $request)
   public function DonationSummary(Request $request)
   {
     $currentMonthName = now()->format('F');
-    $currentMonthYear = now()->format('Y');
     $currentYear = now()->format('Y');
 
     // --- Stats Calculation ---
@@ -165,14 +162,20 @@ public function monthlyDonationStore(Request $request)
     $totalMonthlyCount = $monthlyDonors->count();
     $expectedMonthlyAmount = $monthlyDonors->sum('donation_amount');
 
-    $paidRecords = Donation::where('payment_month', $currentMonthName)->where('payment_year', $currentMonthYear)->get();
+    $paidRecords = Donation::where('payment_month', $currentMonthName)->where('payment_year', $currentYear)->get();
 
     $paidMonthlyCount = $paidRecords->pluck('donor_id')->unique()->count();
     $paidMonthlyAmount = $paidRecords->sum('amount');
 
-    $onTimeData = Donation::whereHas('donor', function($q) {
-      $q->where('donor_type', 'On-time');
-    })->whereMonth('paid_at', now()->month)->whereYear('paid_at', now()->year);
+    $onTimeData = Donation::with('donor:id,full_name,phone')
+      ->where('is_on_time', true)
+      ->whereMonth('created_at', now()->month)      // Database month check
+      ->whereYear('created_at', now()->year)        // Database year check
+      ->latest()
+      ->get();
+
+    $onTimeDataQuantity = $onTimeData->count();
+    $onTimeDataAmount = $onTimeData->sum('amount');
 
     $summary = [
       'month_name' => $currentMonthName,
@@ -182,8 +185,8 @@ public function monthlyDonationStore(Request $request)
       'monthly_total_amt' => $expectedMonthlyAmount,
       'monthly_paid_amt' => $paidMonthlyAmount,
       'monthly_unpaid_amt' => $expectedMonthlyAmount - $paidMonthlyAmount,
-      'ontime_qty' => $onTimeData->count(),
-      'ontime_amt' => $onTimeData->sum('amount'),
+      'ontime_qty' => $onTimeDataQuantity,
+      'ontime_amt' => $onTimeDataAmount,
     ];
 
     // --- Individual Summary Logic ---
@@ -206,11 +209,27 @@ public function monthlyDonationStore(Request $request)
       ];
     }
 
+    // Donation record in this month
+    $currentMonthDonations = Donation::with('donor:id,full_name,phone')
+      ->whereMonth('created_at', now()->month)
+      ->whereYear('created_at', now()->year)
+      ->latest()
+      ->get()
+      ->map(function ($donation) {
+        $data = $donation->toArray();
+
+        // Formats to: "04 March 2026, 02:25 PM"
+        $data['created_at'] = DateFormat::CustomDateTime($donation->created_at);
+
+        return $data;
+      });
+
     return Inertia::render('Admin/Donations/Summary', [
       'summary' => $summary,
       'donors' => Donor::select('id', 'full_name', 'phone')->orderBy('full_name')->get(),
       'individualData' => $individualData,
-      'filters' => $request->only(['donor_id'])
+      'filters' => $request->only(['donor_id']),
+      'recentDonations' => $currentMonthDonations
     ]);
   }
 

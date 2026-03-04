@@ -48,6 +48,7 @@ class Student extends Model
 
     // Status
     'status',
+    'created_by',
   ];
 
   /**

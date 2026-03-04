@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Student;
 use App\Services\ImageService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -85,20 +87,37 @@ class StudentController extends Controller
       'status'                 => 'required|string',
     ]);
 
-    if ($request->hasFile('photo')) {
-      $validated['photo'] = $imageService->upload($request->file('photo'), 'students');
+    try {
+      // 1. Handle Photo Upload
+      if ($request->hasFile('photo')) {
+        $validated['photo'] = $imageService->upload($request->file('photo'), 'students');
+      }
+
+      // 2. Prepare Data
+      $dataToSave = array_merge($validated, [
+        'created_by' => Auth::guard('admin')->id(),
+      ]);
+
+      // 3. Save to Database
+      Student::create($dataToSave);
+
+      return redirect()->route('admin.students.index')
+        ->with('success', 'Student record created successfully!');
+
+    } catch (Exception $e) {
+      // 4. Cleanup: Delete the uploaded photo if the DB save fails
+      if (isset($validated['photo'])) {
+        $imageService->delete($validated['photo']);
+      }
+
+      // 5. Log the actual error for the developer
+      Log::error("Student Store Error: " . $e->getMessage());
+
+      // 6. Return back with an error message for the user
+      return back()
+        ->withInput()
+        ->with('error', 'Something went wrong while saving the student record.');
     }
-
-    // 2. Inject the logged-in user ID
-    $dataToSave = array_merge($validated, [
-            'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
-        ]);
-
-        // dd($dataToSave);
-
-    Student::create($dataToSave);
-
-    return redirect()->route('admin.students.index')->with('success', 'Student created!');
   }
 
   /**
