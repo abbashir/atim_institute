@@ -65,7 +65,7 @@ class DonationController extends Controller
     try {
       DB::beginTransaction();
 
-      // 2. Double-Check for existing payment (Prevent Duplicates)
+      // Double-Check for existing payment (Prevent Duplicates)
       $exists = Donation::where('donor_id', $validated['donor_id'])
         ->where('payment_month', $validated['payment_month'])
         ->where('payment_year', $validated['payment_year'])
@@ -77,22 +77,38 @@ class DonationController extends Controller
         ]);
       }
 
-      // 3. Manually Inject System Data
+      // Manually Inject System Data
       $dataToSave = array_merge($validated, [
         'paid_at' => Carbon::now(),     // Matches created_at timestamp
         'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
       ]);
 
-      // 3. Create the Record
-      //Donation::create($dataToSave);
+      // Create the Record
+//      Donation::create($dataToSave);
+      DB::commit();
 
-      /*Send SMS*/
-      if (true){
-        return redirect()->route('admin.donations.monthly')
-          ->with('error', 'Donor created fffffff.');
+      /************************ Send SMS START *******************************/
+      $donor = Donor::findOrFail($validated['donor_id']);
+      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
+        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান আমরা গ্রহণ করেছি।\n" .
+        "জাজাকাল্লাহ খাইরান।\n" .
+        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
+
+      // Check SMS Balance
+      $res = $smsService->getBalance();
+      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
+      if ($balance <= 1) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+                                 ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
       }
 
-      DB::commit();
+      // Send SMS
+      $smsSent = $smsService->sendSms($donor->phone, $message);
+      if (!$smsSent['success']) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+                                 ->with('error', 'SMS Failed: ' . $smsSent['message']);
+      }
+      /************************ Send SMS END *******************************/
 
       // 4. Redirect with Success Message
       return redirect()->back()->with('success', 'Donation recorded successfully!');

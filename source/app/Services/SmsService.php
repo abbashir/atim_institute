@@ -39,14 +39,17 @@ class SmsService
 
       $result = $response->json();
 
-      dd($result);
-
+      // Check for success code 202
       if (isset($result['response_code']) && $result['response_code'] == 202) {
-        return true;
+        return ['success' => true, 'message' => 'SMS Submitted Successfully'];
       }
 
-      Log::warning("BulkSMSBD Error: " . ($result['success_message'] ?? 'Unknown Error'), $result);
-      return false;
+      // Return the specific error message from API if available
+      $errorMessage = $result['error_message'] ?? ($result['success_message'] ?: 'Unknown API Error');
+
+      Log::warning("BulkSMSBD Error: " . $errorMessage, $result);
+
+      return ['success' => false, 'message' => $errorMessage];
 
     } catch (\Exception $e) {
       Log::error("BulkSMSBD Exception: " . $e->getMessage());
