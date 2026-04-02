@@ -11,7 +11,7 @@
         </div>
 
         <h1 class="text-5xl md:text-7xl font-bold leading-tight tracking-tight">
-            Support an Orphan. <br>
+            Support an Orphan.<br>
             <span class="text-yellow-500">Earn Sadaqah Jariyah.</span>
         </h1>
 

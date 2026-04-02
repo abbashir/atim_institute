@@ -81,27 +81,27 @@ services:
     networks:
       - template-network
 
-  cron:
-    build:
-      context: .
-      dockerfile: ./docker/backend/cron.dockerfile
-    container_name: template_cron
-    volumes:
-      - ./source:/var/www/html/template
-    restart: unless-stopped
-    depends_on:
-      - php
-    networks:
-      - template-network
+  # cron:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/backend/cron.dockerfile
+  #   container_name: template_cron
+  #   volumes:
+  #     - ./source:/var/www/html/template
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - php
+  #   networks:
+  #     - template-network
 
-  redis:
-    image: redis:7-alpine
-    container_name: template_redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - template-network
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: template_redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - template-network
 
 networks:
   template-network:

@@ -28,7 +28,7 @@
             <div class="flex items-center gap-2">
                 <div class="text-[#c59436] text-2xl">🌙</div>
                 <div class="font-bold text-xl tracking-tight">
-                    Al-Yateem <span class="text-[#c59436]">Foundation</span>
+                    Darus Salam <span class="text-[#c59436]">Foundation</span>
                 </div>
             </div>
 

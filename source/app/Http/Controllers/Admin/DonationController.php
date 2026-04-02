@@ -84,7 +84,7 @@ class DonationController extends Controller
       ]);
 
       // Create the Record
-//      Donation::create($dataToSave);
+      Donation::create($dataToSave);
       DB::commit();
 
       /************************ Send SMS START *******************************/

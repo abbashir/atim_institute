@@ -33,7 +33,7 @@
             <h4 class="font-bold text-[#c59436] mb-6 text-sm">Bank Account</h4>
             <ul class="space-y-3 text-[11px] text-gray-300 font-medium">
                 <li><span class="text-[#c59436]">Bank:</span> Islami Bank Bangladesh</li>
-                <li><span class="text-[#c59436]">Account:</span> Al-Yateem Foundation</li>
+                <li><span class="text-[#c59436]">Account:</span> Darus Salam Foundation</li>
                 <li><span class="text-[#c59436]">A/C No:</span> 2050-1234-5678-90</li>
                 <li><span class="text-[#c59436]">Branch:</span> Motijheel, Dhaka</li>
                 <li><span class="text-[#c59436]">Routing:</span> 125-261-325</li>
@@ -68,6 +68,6 @@
 
     {{-- Bottom Copyright --}}
     <div class="max-w-7xl mx-auto px-6 pt-8 text-center text-[10px] text-gray-500 font-medium uppercase tracking-[0.1em]">
-        <p>&copy; {{ date('Y') }} Al-Yateem Foundation. All rights reserved. | Serving Orphans with Love & Faith</p>
+        <p>&copy; {{ date('Y') }} Darus Salam Foundation. All rights reserved. | Serving Orphans with Love & Faith</p>
     </div>
 </footer>

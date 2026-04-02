@@ -15,6 +15,43 @@ use App\Http\Controllers\Admin\DonorController;
 use App\Http\Controllers\Admin\DonationController;
 use App\Http\Controllers\ProfileController;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/clear', function () {
+
+  try {
+    // 1. Clear Route Cache
+    Artisan::call('route:clear');
+
+    // 2. Clear Config Cache
+    Artisan::call('config:clear');
+
+    // 3. Clear Application Cache
+    Artisan::call('cache:clear');
+
+    // 4. Clear Compiled View Files
+    Artisan::call('view:clear');
+
+    Artisan::call('storage:link');
+
+    // 5. Re-optimize (Optional but recommended for performance)
+    Artisan::call('optimize');
+
+    return "<pre>
+        ✅ Route Cache Cleared
+        ✅ Config Cache Cleared
+        ✅ App Cache Cleared
+        ✅ View Cache Cleared
+        
+        Full Output:
+        " . Artisan::output() . "
+        </pre>";
+
+  } catch (\Exception $e) {
+    return "Error occurred: " . $e->getMessage();
+  }
+});
+
 /*
 |--------------------------------------------------------------------------
 | Admin Routes (Prefix: admin/)

@@ -17,7 +17,7 @@
                         <div class="text-[#c59436] text-4xl mb-6 font-serif">"</div>
 
                         <p class="text-[#4a7a6a] italic text-lg leading-relaxed mb-8">
-                            Al-Yateem Foundation has been a trusted channel for my Zakat contributions. Seeing the children flourish through their Hifz program fills my heart with joy.
+                            Darus Salam Foundation has been a trusted channel for my Zakat contributions. Seeing the children flourish through their Hifz program fills my heart with joy.
                         </p>
 
                         <div class="space-y-1">

@@ -80,7 +80,7 @@ const Header = ({ setSidebarOpen }) => {
 
             <div className="relative h-11 w-11">
               <img
-                src="https://i.pravatar.cc/150?u=musharof"
+                src="https://i.pravatar.cc/150"
                 alt="User"
                 className="h-full w-full rounded-full object-cover border border-slate-100"
               />
