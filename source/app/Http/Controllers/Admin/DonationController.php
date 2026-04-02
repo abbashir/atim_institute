@@ -90,7 +90,7 @@ class DonationController extends Controller
       /************************ Send SMS START *******************************/
       $donor = Donor::findOrFail($validated['donor_id']);
       $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
-        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান আমরা গ্রহণ করেছি।\n" .
+        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
         "জাজাকাল্লাহ খাইরান।\n" .
         "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
 
@@ -127,7 +127,7 @@ class DonationController extends Controller
     return Inertia::render('Admin/Donations/OnTimeDonation');
   }
 
-  public function storeOnTimeDonation(Request $request)
+  public function storeOnTimeDonation(Request $request, SmsService $smsService)
   {
     $validated = $request->validate([
       // Donor Identity
@@ -143,35 +143,59 @@ class DonationController extends Controller
     ]);
 
     try {
-      return DB::transaction(function () use ($validated) {
-        // 1. Check if donor exists by phone, if not, insert with defaults
-        // firstOrCreate returns the existing model or the newly created one
-        $donor = Donor::firstOrCreate(
-          ['phone' => $validated['phone']],
-          [
-            'full_name' => $validated['full_name'],
-            'email' => $validated['email'],
-            'address' => $validated['address'],
-            'donor_type' => 'On-time', // Hard-coded default
-            'status' => 'Active',  // Hard-coded default
-            'donation_amount' => 0,      // Initial amount 0 as requested
-            'created_by' => Auth::guard('admin')->id(),
-          ]
-        );
-
-        Donation::create([
-          'donor_id' => $donor->id,
-          'amount' => $validated['amount'],
-          'paid_at' => Carbon::now(),
-          'payment_method' => $validated['payment_method'],
-          'receipt_no' => $validated['receipt_no'],
+      DB::beginTransaction();
+      // 1. Check if donor exists by phone, if not, insert with defaults
+      // firstOrCreate returns the existing model or the newly created one
+      $donor = Donor::firstOrCreate(
+        ['phone' => $validated['phone']],
+        [
+          'full_name' => $validated['full_name'],
+          'email' => $validated['email'],
+          'address' => $validated['address'],
+          'donor_type' => 'On-time', // Hard-coded default
+          'status' => 'Active',  // Hard-coded default
+          'donation_amount' => 0,      // Initial amount 0 as requested
           'created_by' => Auth::guard('admin')->id(),
-          'is_on_time' => true,
-        ]);
+        ]
+      );
 
-        return redirect()->route('admin.donations.summary')->with('success', 'Donation recorded successfully!');
-      });
+      Donation::create([
+        'donor_id' => $donor->id,
+        'amount' => $validated['amount'],
+        'paid_at' => Carbon::now(),
+        'payment_method' => $validated['payment_method'],
+        'receipt_no' => $validated['receipt_no'],
+        'created_by' => Auth::guard('admin')->id(),
+        'is_on_time' => true,
+      ]);
+      DB::commit();
+
+      /************************ Send SMS START *******************************/
+      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
+        "আপনার {$validated['amount']} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
+        "জাজাকাল্লাহ খাইরান।\n" .
+        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
+
+      // Check SMS Balance
+      $res = $smsService->getBalance();
+      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
+      if ($balance <= 1) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+          ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
+      }
+
+      // Send SMS
+      $smsSent = $smsService->sendSms($donor->phone, $message);
+      if (!$smsSent['success']) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+          ->with('error', 'SMS Failed: ' . $smsSent['message']);
+      }
+      /************************ Send SMS END *******************************/
+
+      return redirect()->route('admin.donations.summary')->with('success', 'Donation recorded successfully!');
+
     } catch (\Exception $e) {
+      DB::rollBack();
       return redirect()->back()->with('error', 'Process failed: ' . $e->getMessage());
     }
   }

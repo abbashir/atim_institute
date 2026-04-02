@@ -24,9 +24,14 @@ export default function OnTimeDonation() {
   const handleSubmit = (e) => {
     e.preventDefault();
     post(route('admin.donations.on-time.store'), {
-      onSuccess: () => {
+      onSuccess: (page) => {
         reset();
-        success("Record saved successfully!");
+        if (page.props.flash.success) {
+          success(page.props.flash.success);
+        }
+        if (page.props.flash.error) {
+          error(page.props.flash.error);
+        }
       },
       onError: () => error("Please fix the validation errors.")
     });
