@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\DonorType;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Donor;
 use Exception;
@@ -67,7 +68,7 @@ class DonorController extends Controller
             'email'           => 'nullable|email|max:255',
             'address'         => 'required|string',
             'donation_amount' => 'required|numeric|min:0',
-            'donor_type'      => 'required|string', // e.g., Monthly, One-time, Corporate
+            'donor_type'      => 'required|string|in:' . implode(',', DonorType::ALL),
             'status'          => 'required|in:Active,Inactive',
         ]);
 
@@ -103,17 +104,26 @@ class DonorController extends Controller
     {
         $validated = $request->validate([
             'full_name'       => 'required|string|max:255',
-            'phone'           => 'required|string|max:20',
+            'phone'           => 'required|string|max:20|unique:donors,phone,' . $donor->id,
             'email'           => 'nullable|email|max:255',
             'address'         => 'required|string',
             'donation_amount' => 'required|numeric|min:0',
-            'donor_type'      => 'required|string',
+            'donor_type'      => 'required|string|in:' . implode(',', DonorType::ALL),
             'status'          => 'required|in:Active,Inactive',
         ]);
 
+      try {
         $donor->update($validated);
 
-        return redirect()->route('admin.donors.index')->with('success', 'Donor updated successfully.');
+        return redirect()->route('admin.donors.index')
+          ->with('success', 'Donor updated successfully.');
+      } catch (Exception $e) {
+        Log::error("Donor Update Failed: " . $e->getMessage());
+
+        return back()
+          ->withInput()
+          ->with('error', 'Failed to update donor. Please try again.');
+      }
     }
 
     public function show(Donor $donor)
@@ -123,9 +133,22 @@ class DonorController extends Controller
         ]);
     }
 
-    public function destroy(Donor $donor)
-    {
-        $donor->delete();
-        return redirect()->route('admin.donors.index')->with('success', 'Donor deleted.');
+  public function destroy(Donor $donor)
+  {
+    try {
+      if ($donor->donations()->exists()) {
+        return back()->with('error', 'Cannot delete donor. This donor has existing donation records.');
+      }
+
+      $donor->delete();
+
+      return redirect()->route('admin.donors.index')
+        ->with('success', 'Donor deleted successfully.');
+    } catch (Exception $e) {
+      Log::error("Donor Deletion Failed: " . $e->getMessage());
+
+      return back()
+        ->with('error', 'Failed to delete donor. Please try again.');
     }
+  }
 }

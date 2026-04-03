@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\DonorType;
 use App\Helpers\DateFormat;
 use App\Models\Admin\Donor;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,7 @@ class DonationController extends Controller
     $status = $request->input('payment_status', 'unpaid'); // Initial state: unpaid
     $search = $request->input('search', '');
 
-    $query = Donor::where('status', 'Active')->where('donor_type', 'Monthly');
+    $query = Donor::where('status', 'Active')->where('donor_type', DonorType::MONTHLY);
 
     if ($search) {
       $query->where(function ($q) use ($search) {
@@ -152,7 +153,7 @@ class DonationController extends Controller
           'full_name' => $validated['full_name'],
           'email' => $validated['email'],
           'address' => $validated['address'],
-          'donor_type' => 'On-time', // Hard-coded default
+          'donor_type' => DonorType::ONE_TIME,
           'status' => 'Active',  // Hard-coded default
           'donation_amount' => 0,      // Initial amount 0 as requested
           'created_by' => Auth::guard('admin')->id(),
@@ -206,7 +207,7 @@ class DonationController extends Controller
     $currentYear = now()->format('Y');
 
     // --- Stats Calculation ---
-    $monthlyDonors = Donor::where('donor_type', 'Monthly')->where('status', 'Active')->get();
+    $monthlyDonors = Donor::where('donor_type', DonorType::MONTHLY)->where('status', 'Active')->get();
     $totalMonthlyCount = $monthlyDonors->count();
     $expectedMonthlyAmount = $monthlyDonors->sum('donation_amount');
 
@@ -251,7 +252,7 @@ class DonationController extends Controller
       $individualData = [
         'donor' => $donor,
         'history' => $donor->donations,
-        'due_months' => $donor->donor_type === 'Monthly'
+        'due_months' => $donor->donor_type === DonorType::MONTHLY
           ? $allMonths->filter(fn($m) => !in_array($m, $paidMonths))->values()
           : []
       ];

@@ -27,6 +27,9 @@ const Edit = ({ donor }) => {
         if (page.props.flash.success) {
           success(page.props.flash.success);
         }
+        if (page.props.flash.error) {
+          error(page.props.flash.error);
+        }
       },
       onError: (validationErrors) => {
         // Use the aliased name here

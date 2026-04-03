@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\DonorType;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Donation;
 use App\Models\Admin\Donor;
@@ -25,7 +26,7 @@ class DashboardController extends Controller
     // Donor Stats
     $analytics['donors'] = [
       'total' => Donor::count(),
-      'monthly' => Donor::where('donor_type', 'Monthly')->count(),
+      'monthly' => Donor::where('donor_type', DonorType::MONTHLY)->count(),
     ];
 
     // Donation Stats
