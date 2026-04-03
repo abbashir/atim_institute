@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\DonorType;
 use App\Helpers\DateFormat;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Donation;
@@ -34,12 +35,27 @@ class ReportController extends Controller
     // Logic:
     // For Monthly: We check the 'paid_at' date or specific month logic
     // For On-time: We check 'created_at'
-    $query->where(function($q) use ($startDate, $endDate) {
-      $q->where(function($sub) use ($startDate, $endDate) {
-        $sub->whereHas('donor', fn($d) => $d->where('donor_type', 'Monthly'))
-          ->whereBetween('paid_at', [$startDate, $endDate]);
+//    $query->where(function($q) use ($startDate, $endDate) {
+//      $q->where(function($sub) use ($startDate, $endDate) {
+//        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::MONTHLY))
+//          ->whereBetween('paid_at', [$startDate, $endDate]);
+//      })->orWhere(function($sub) use ($startDate, $endDate) {
+//        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::ONE_TIME))
+//          ->whereBetween('created_at', [$startDate, $endDate]);
+//      });
+//    });
+
+    $query->where(function($q) use ($startDate, $endDate, $fromMonth, $fromYear, $toMonth, $toYear) {
+      // Monthly: compare against payment_month + payment_year
+      $q->where(function($sub) use ($fromMonth, $fromYear, $toMonth, $toYear) {
+        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::MONTHLY))
+          ->where(function($range) use ($fromMonth, $fromYear, $toMonth, $toYear) {
+            $range->whereRaw("(CAST(payment_year AS INTEGER) > ? OR (CAST(payment_year AS INTEGER) = ? AND CAST(payment_month AS INTEGER) >= ?))", [$fromYear, $fromYear, $fromMonth])
+              ->whereRaw("(CAST(payment_year AS INTEGER) < ? OR (CAST(payment_year AS INTEGER) = ? AND CAST(payment_month AS INTEGER) <= ?))", [$toYear, $toYear, $toMonth]);
+          });
+        // One-time: compare against created_at
       })->orWhere(function($sub) use ($startDate, $endDate) {
-        $sub->whereHas('donor', fn($d) => $d->where('donor_type', 'On-time'))
+        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::ONE_TIME))
           ->whereBetween('created_at', [$startDate, $endDate]);
       });
     });

@@ -42,6 +42,9 @@ const Index = ({ donors, filters }) => {
           if (page.props.flash.success) {
             success(page.props.flash.success);
           }
+          if (page.props.flash.error) {
+            error(page.props.flash.error);
+          }
         },
         onError: () => {
           error("Failed to delete donor. They may have related records.");
