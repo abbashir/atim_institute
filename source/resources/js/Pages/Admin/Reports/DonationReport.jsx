@@ -73,10 +73,14 @@ export default function DonationReport({ donations, total_amount, filters }) {
 
           <div>
             <label className="mb-1 block text-xs font-bold uppercase text-slate-500">Type</label>
-            <select value={filters.donor_type || ''} onChange={e => handleFilter('donor_type', e.target.value)} className="w-full rounded border border-slate-200 p-2 text-sm">
+            <select
+              value={filters.is_on_time ?? ''}
+              onChange={e => handleFilter('is_on_time', e.target.value)}
+              className="w-full rounded border border-slate-200 p-2 text-sm"
+            >
               <option value="">All Types</option>
-              <option value="Monthly">Monthly</option>
-              <option value="On-time">On-time</option>
+              <option value="0">Monthly</option>
+              <option value="1">On-time</option>
             </select>
           </div>
 
@@ -121,7 +125,11 @@ export default function DonationReport({ donations, total_amount, filters }) {
               <div className="font-bold text-slate-700">{item.donor?.full_name}</div>
               <div className="text-xs text-slate-500">{item.donor?.phone}</div> {/* Added Phone */}
             </td>
-            <td className="px-6 py-4 text-xs font-bold uppercase text-slate-500">{item.donor?.donor_type}</td>
+            <td className="px-6 py-4 text-xs font-bold uppercase">
+              <span className={item.is_on_time ? 'text-green-500' : 'text-red-500'}>
+                  {item.is_on_time ? 'On Time' : 'Monthly'}
+              </span>
+            </td>
             <td className="px-6 py-4 text-sm">{item.payment_method}</td>
             <td className="px-6 py-4 text-xs font-mono text-indigo-600">{item.receipt_no}</td>
             <td className="px-6 py-4 text-right font-bold text-slate-900">{formatAmount(item.amount)}</td>

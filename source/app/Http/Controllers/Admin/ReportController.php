@@ -27,41 +27,34 @@ class ReportController extends Controller
     $startDate = \Carbon\Carbon::createFromDate($fromYear, $fromMonth, 1)->startOfDay();
     $endDate   = \Carbon\Carbon::createFromDate($toYear, $toMonth, 1)->endOfMonth()->endOfDay();
 
+    $perPage = $request->input('per_page', 10);
     $query = Donation::with('donor');
 
-    // 1. Determine items per page (default to 10)
-    $perPage = $request->input('per_page', 10);
+    $isOnTime = $request->input('is_on_time'); // '', '0', or '1'
 
-    // Logic:
-    // For Monthly: We check the 'paid_at' date or specific month logic
-    // For On-time: We check 'created_at'
-//    $query->where(function($q) use ($startDate, $endDate) {
-//      $q->where(function($sub) use ($startDate, $endDate) {
-//        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::MONTHLY))
-//          ->whereBetween('paid_at', [$startDate, $endDate]);
-//      })->orWhere(function($sub) use ($startDate, $endDate) {
-//        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::ONE_TIME))
-//          ->whereBetween('created_at', [$startDate, $endDate]);
-//      });
-//    });
+//    dd($isOnTime);
 
-    $query->where(function($q) use ($startDate, $endDate, $fromMonth, $fromYear, $toMonth, $toYear) {
-      // Monthly: compare against payment_month + payment_year
-      $q->where(function($sub) use ($fromMonth, $fromYear, $toMonth, $toYear) {
-        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::MONTHLY))
-          ->where(function($range) use ($fromMonth, $fromYear, $toMonth, $toYear) {
-            $range->whereRaw("(CAST(payment_year AS INTEGER) > ? OR (CAST(payment_year AS INTEGER) = ? AND CAST(payment_month AS INTEGER) >= ?))", [$fromYear, $fromYear, $fromMonth])
-              ->whereRaw("(CAST(payment_year AS INTEGER) < ? OR (CAST(payment_year AS INTEGER) = ? AND CAST(payment_month AS INTEGER) <= ?))", [$toYear, $toYear, $toMonth]);
-          });
-        // One-time: compare against created_at
-      })->orWhere(function($sub) use ($startDate, $endDate) {
-        $sub->whereHas('donor', fn($d) => $d->where('donor_type', DonorType::ONE_TIME))
-          ->whereBetween('created_at', [$startDate, $endDate]);
+    if ($isOnTime === '0') {
+      // Monthly only
+      $query->where('is_on_time', false)
+        ->whereBetween('paid_at', [$startDate, $endDate]);
+
+    } elseif ($isOnTime === '1') {
+      // On-time only
+      $query->where('is_on_time', true)
+        ->whereBetween('created_at', [$startDate, $endDate]);
+
+    } else {
+      // All — union of both conditions
+      $query->where(function ($q) use ($startDate, $endDate) {
+        $q->where(function ($sub) use ($startDate, $endDate) {
+          $sub->where('is_on_time', false)
+            ->whereBetween('paid_at', [$startDate, $endDate]);
+        })->orWhere(function ($sub) use ($startDate, $endDate) {
+          $sub->where('is_on_time', true)
+            ->whereBetween('created_at', [$startDate, $endDate]);
+        });
       });
-    });
-
-    if ($request->filled('donor_type')) {
-      $query->whereHas('donor', fn($q) => $q->where('donor_type', $request->donor_type));
     }
 
     $totalAmount = (clone $query)->sum('amount');
@@ -80,7 +73,7 @@ class ReportController extends Controller
         'from_year'  => $fromYear,
         'to_month'   => $toMonth,
         'to_year'    => $toYear,
-        'donor_type' => $request->donor_type
+        'is_on_time' => $request->is_on_time
       ]
     ]);
   }
