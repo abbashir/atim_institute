@@ -5,6 +5,7 @@ import { Save, Receipt, ArrowLeft, ChevronDown } from 'lucide-react';
 import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
 import {error, success} from "@/Utils/Notify.js";
+import compressImage from "@/Utils/index.js";
 
 const Edit = ({ expense, categories }) => {
   const { data, setData, post, processing, errors } = useForm({
@@ -131,7 +132,13 @@ const Edit = ({ expense, categories }) => {
               </label>
               <input
                 type="file"
-                onChange={e => setData('attachment', e.target.files[0])}
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  const compressed = await compressImage(file, 50); // 50KB target
+                  setData('attachment', compressed);
+                }}
                 className="w-full cursor-pointer rounded-lg border-[1.5px] border-dashed border-slate-300 bg-slate-50 py-3 px-5 outline-none transition focus:border-indigo-600"
               />
               {expense.attachment && (
