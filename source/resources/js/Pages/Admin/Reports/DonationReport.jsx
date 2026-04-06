@@ -84,7 +84,16 @@ export default function DonationReport({ donations, total_amount, filters }) {
             </select>
           </div>
 
-          <button onClick={() => window.print()} className="flex items-center justify-center gap-2 rounded bg-indigo-600 px-5 py-2 text-white hover:bg-indigo-700 h-[38px]">
+          <button onClick={() => {
+            const params = new URLSearchParams({
+              from_month: filters.from_month,
+              from_year:  filters.from_year,
+              to_month:   filters.to_month,
+              to_year:    filters.to_year,
+              ...(filters.is_on_time !== '' && { is_on_time: filters.is_on_time }),
+            });
+            window.open(route('admin.reports.donations.print') + '?' + params.toString(), '_blank');
+          }} className="flex items-center justify-center gap-2 rounded bg-indigo-600 px-5 py-2 text-white hover:bg-indigo-700 h-[38px]">
             <Download size={16} /> Print Report
           </button>
         </div>

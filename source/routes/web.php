@@ -89,7 +89,10 @@ Route::prefix('admin')->as('admin.')->group(function () {
 
 
         Route::get('reports/donations', [ReportController::class, 'donationReport'])->name('reports.donations');
+        Route::get('reports/donations/print', [ReportController::class, 'printDonationReport'])->name('reports.donations.print');
+
         Route::get('reports/expenses', [ReportController::class, 'expenseReport'])->name('reports.expenses');
+        Route::get('reports/expenses/print', [ReportController::class, 'printExpenseReport'])->name('reports.expenses.print');
 
         Route::get('settings', [SettingsController::class, 'settings'])->name('settings.index');
 
