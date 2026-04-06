@@ -6,6 +6,7 @@ import { Link } from '@inertiajs/react';
 import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
 import {error, success} from "@/Utils/Notify.js";
+import compressImage from "@/Utils/index.js";
 
 const Edit = ({ student }) => {
   // Initialize form with existing student data
@@ -113,7 +114,16 @@ const Edit = ({ student }) => {
                 {student.photo_url && !data.photo && (
                     <img src={student.photo_url} className="h-16 w-16 rounded-lg object-cover border border-slate-200" alt="Current" />
                 )}
-                <input type="file" onChange={e => setData('photo', e.target.files[0])} className="w-full cursor-pointer rounded-lg border-[1.5px] border-dashed border-slate-300 bg-slate-50 py-3 px-5 font-medium outline-none transition focus:border-indigo-600" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const compressed = await compressImage(file, 50); // 50KB target
+                    setData('photo', compressed);
+                  }}
+                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-dashed border-slate-300 bg-slate-50 py-3 px-5 font-medium outline-none transition focus:border-indigo-600" />
               </div>
             </div>
           </div>

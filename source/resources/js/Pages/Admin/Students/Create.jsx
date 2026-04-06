@@ -6,6 +6,7 @@ import { success, error } from '@/Utils/Notify';
 import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
 import TextareaField from "@/Components/Form/TextareaField.jsx";
+import compressImage from "@/Utils/index.js";
 
 const Create = () => {
   const { data, setData, post, processing, errors } = useForm({
@@ -129,7 +130,13 @@ const Create = () => {
               <label className="mb-2.5 block text-black font-medium">Student Photo</label>
               <input
                 type="file"
-                onChange={e => setData('photo', e.target.files[0])}
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  const compressed = await compressImage(file, 50); // 50KB target
+                  setData('photo', compressed);
+                }}
                 className="w-full cursor-pointer rounded-lg border-[1.5px] border-dashed border-slate-300 bg-slate-50 py-3 px-5 font-medium outline-none transition focus:border-indigo-600 active:border-indigo-600"
               />
             </div>
