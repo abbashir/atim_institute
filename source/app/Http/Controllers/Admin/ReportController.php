@@ -10,7 +10,7 @@ use App\Models\Admin\Expense; // Ensure you have an Expense model
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Carbon\Carbon;
 class ReportController extends Controller
 {
   /**
@@ -83,44 +83,46 @@ class ReportController extends Controller
    * Display the Expense Report
    */
   public function expenseReport(Request $request)
-  {
-    // 1. Determine items per page (default to 10)
+{
     $perPage = $request->input('per_page', 10);
 
-    // 1. Get dates from request or set defaults
-    // Default: March 1st, 2026 to March 4th, 2026 (based on current date)
-    $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
-    $toDate   = $request->input('to_date', now()->toDateString());
+    // Get dates from request
+    $fromDateStr = $request->input('from_date');
+    $toDateStr   = $request->input('to_date');
 
-    // 2. Initialize Query
+    // If no dates provided, default to current month's first and last day
+    $fromDate = $fromDateStr 
+        ? Carbon::createFromFormat('d-m-Y', $fromDateStr)->startOfDay()
+        : Carbon::now()->startOfMonth();
+
+    $toDate = $toDateStr 
+        ? Carbon::createFromFormat('d-m-Y', $toDateStr)->endOfDay()
+        : Carbon::now()->endOfMonth();
+
     $query = Expense::with('category:id,name')
-      ->where('status', 'Approved');
+        ->where('status', 'Approved');
 
-    // 3. Apply Range Filter on expense_date
-    // Use whereBetween with strings is fine for 'date' column types
-    if ($fromDate && $toDate) {
-      $query->whereBetween('expense_date', [$fromDate, $toDate]);
-    }
+    // Filter by date range
+    $query->whereBetween('expense_date', [$fromDate->toDateString(), $toDate->toDateString()]);
 
-    // 4. Calculate Total for the filtered results
     $totalAmount = (clone $query)->sum('amount');
 
     $expenses = $query->latest('expense_date')->paginate($perPage)->withQueryString()
-      ->through(function ($donation) {
-        $data = $donation->toArray();
-        $data['expense_date'] = DateFormat::CustomDate($donation->expense_date);
-        return $data;
-      });
-    // 5. Paginate and Return
+        ->through(function ($expense) {
+            $data = $expense->toArray();
+            $data['expense_date'] = Carbon::parse($expense->expense_date)->format('d-m-Y');
+            return $data;
+        });
+
     return Inertia::render('Admin/Reports/ExpenseReport', [
-      'expenses' => $expenses,
-      'total_expense' => number_format($totalAmount, 2, '.', ''),
-      'filters' => [
-        'from_date' => $fromDate,
-        'to_date'   => $toDate,
-      ]
+        'expenses' => $expenses,
+        'total_expense' => number_format($totalAmount, 2, '.', ''),
+        'filters' => [
+            'from_date' => $fromDate->format('d-m-Y'),
+            'to_date'   => $toDate->format('d-m-Y'),
+        ]
     ]);
-  }
+}
 
   public function printDonationReport(Request $request)
   {
