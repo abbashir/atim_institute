@@ -49,7 +49,13 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
 
           <div className="flex gap-2">
             <button
-              onClick={() => window.print()}
+              onClick={() => {
+                const params = new URLSearchParams({
+                  from_date: filters.from_date || '',
+                  to_date:   filters.to_date || '',
+                });
+                window.open(route('admin.reports.expenses.print') + '?' + params.toString(), '_blank');
+              }}
               className="flex items-center gap-2 rounded bg-slate-800 px-6 py-2.5 text-sm font-bold text-white hover:bg-slate-700 transition-all"
             >
               <Printer size={18} /> Print
