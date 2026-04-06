@@ -78,9 +78,11 @@ class DonationController extends Controller
         ]);
       }
 
+      $paid_at = \Carbon\Carbon::createFromFormat('F Y', $validated['payment_month'] . ' ' . $validated['payment_year'])->startOfMonth()->toDateString();
+
       // Manually Inject System Data
       $dataToSave = array_merge($validated, [
-        'paid_at' => Carbon::now(),     // Matches created_at timestamp
+        'paid_at' => $paid_at,     // 2026-02-24
         'created_by' => Auth::guard('admin')->id(),        // Logged in user ID
       ]);
 
@@ -89,26 +91,26 @@ class DonationController extends Controller
       DB::commit();
 
       /************************ Send SMS START *******************************/
-      $donor = Donor::findOrFail($validated['donor_id']);
-      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
-        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
-        "জাজাকাল্লাহ খাইরান।\n" .
-        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
-
-      // Check SMS Balance
-      $res = $smsService->getBalance();
-      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
-      if ($balance <= 1) {
-        return redirect()->back()->with('success', 'Donation recorded successfully!')
-                                 ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
-      }
-
-      // Send SMS
-      $smsSent = $smsService->sendSms($donor->phone, $message);
-      if (!$smsSent['success']) {
-        return redirect()->back()->with('success', 'Donation recorded successfully!')
-                                 ->with('error', 'SMS Failed: ' . $smsSent['message']);
-      }
+//      $donor = Donor::findOrFail($validated['donor_id']);
+//      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
+//        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
+//        "জাজাকাল্লাহ খাইরান।\n" .
+//        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
+//
+//      // Check SMS Balance
+//      $res = $smsService->getBalance();
+//      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
+//      if ($balance <= 1) {
+//        return redirect()->back()->with('success', 'Donation recorded successfully!')
+//                                 ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
+//      }
+//
+//      // Send SMS
+//      $smsSent = $smsService->sendSms($donor->phone, $message);
+//      if (!$smsSent['success']) {
+//        return redirect()->back()->with('success', 'Donation recorded successfully!')
+//                                 ->with('error', 'SMS Failed: ' . $smsSent['message']);
+//      }
       /************************ Send SMS END *******************************/
 
       // 4. Redirect with Success Message
