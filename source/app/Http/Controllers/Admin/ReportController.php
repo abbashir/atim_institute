@@ -175,32 +175,36 @@ class ReportController extends Controller
     return $pdf->stream('donation-report.pdf'); // stream = open in browser, download() to force download
   }
 
+
   public function printExpenseReport(Request $request)
   {
-    $fromDate = $request->input('from_date');
-    $toDate   = $request->input('to_date');
+      $fromDate = $request->input('from_date'); // dd-MM-yyyy
+      $toDate   = $request->input('to_date');   // dd-MM-yyyy
 
-    $query = Expense::with('category:id,name')
-      ->where('status', 'Approved');
+      $query = Expense::with('category:id,name')
+          ->where('status', 'Approved');
 
-    // Only apply date filter if both dates are present
-    if ($fromDate && $toDate) {
-      $query->whereBetween('expense_date', [$fromDate, $toDate]);
-    }
+      if ($fromDate && $toDate) {
+          // Convert dd-MM-yyyy → yyyy-MM-dd
+          $from = Carbon::createFromFormat('d-m-Y', $fromDate)->startOfDay()->toDateString();
+          $to   = Carbon::createFromFormat('d-m-Y', $toDate)->endOfDay()->toDateString();
 
-    $expenses    = $query->latest('expense_date')->get();
-    $totalAmount = $expenses->sum('amount');
+          $query->whereBetween('expense_date', [$from, $to]);
+      }
 
-    $fromLabel = $fromDate ? \Carbon\Carbon::parse($fromDate)->format('d M Y') : 'All Time';
-    $toLabel   = $toDate   ? \Carbon\Carbon::parse($toDate)->format('d M Y')   : 'All Time';
+      $expenses = $query->latest('expense_date')->get();
+      $totalAmount = $expenses->sum('amount');
 
-    $pdf = Pdf::loadView('reports.expense-print', [
-      'expenses'    => $expenses,
-      'totalAmount' => number_format($totalAmount, 2),
-      'fromLabel'   => $fromLabel,
-      'toLabel'     => $toLabel,
-    ])->setPaper('a4', 'portrait');
+      $fromLabel = $fromDate ? Carbon::createFromFormat('d-m-Y', $fromDate)->format('d M Y') : 'All Time';
+      $toLabel   = $toDate   ? Carbon::createFromFormat('d-m-Y', $toDate)->format('d M Y')   : 'All Time';
 
-    return $pdf->stream('expense-report.pdf');
+      $pdf = Pdf::loadView('reports.expense-print', [
+          'expenses'    => $expenses,
+          'totalAmount' => number_format($totalAmount, 2),
+          'fromLabel'   => $fromLabel,
+          'toLabel'     => $toLabel,
+      ])->setPaper('a4', 'portrait');
+
+      return $pdf->stream('expense-report.pdf');
   }
 }
