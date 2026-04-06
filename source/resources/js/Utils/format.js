@@ -19,3 +19,13 @@ export const formatNumber = (amount) => {
     maximumFractionDigits: 2,
   })
 };
+
+/**
+ * Converts "yyyy-MM-dd" → "dd-MM-yyyy"
+ * e.g. "2026-04-01" → "01-04-2026"
+ */
+export const formatDateDisplay = (str) => {
+  if (!str) return '';
+  const [year, month, day] = str.split('-');
+  return `${day}-${month}-${year}`;
+};
