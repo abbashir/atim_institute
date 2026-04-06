@@ -90,7 +90,7 @@ class ReportController extends Controller
     // 1. Get dates from request or set defaults
     // Default: March 1st, 2026 to March 4th, 2026 (based on current date)
     $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
-    $toDate   = $request->input('to_date', now()->toDateString());
+    $toDate = $request->input('to_date', now()->endOfMonth()->toDateString());
 
     // 2. Initialize Query
     $query = Expense::with('category:id,name')
