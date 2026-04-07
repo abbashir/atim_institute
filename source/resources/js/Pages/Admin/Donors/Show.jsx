@@ -3,24 +3,25 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Edit, User, Phone, Mail, MapPin, CreditCard, Calendar, Activity } from 'lucide-react';
 import {formatAmount} from "@/Utils/format.js";
+import { local } from "@/Utils/Helper.js";
 
 const Show = ({ donor }) => {
   return (
-    <AdminLayout pageName="Donor Details">
-      <Head title={`Donor - ${donor.full_name}`} />
+    <AdminLayout pageName={local('IDS_DONOR_PROFILE')}>
+      <Head title={`${local('IDS_DONOR_PROFILE')} - ${donor.full_name}`} />
 
       {/* Navigation & Actions */}
       <div className="mb-6 flex items-center justify-between">
         <Link href={route('admin.donors.index')} className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition">
           <ArrowLeft size={18} />
-          Back to Donors
+          {local('IDS_DONOR_BACK_TO_DONORS')}
         </Link>
         <Link 
           href={route('admin.donors.edit', donor.id)}
           className="flex items-center gap-2 rounded-lg bg-white border border-slate-200 px-5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition shadow-sm"
         >
           <Edit size={16} />
-          Edit Profile
+          {local('IDS_DONOR_EDIT_PROFILE')}
         </Link>
       </div>
 
@@ -38,7 +39,7 @@ const Show = ({ donor }) => {
               <span className={`inline-flex rounded-full px-4 py-1 text-sm font-semibold ${
                 donor.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
               }`}>
-                {donor.status} Account
+                {donor.status} {local('IDS_DONOR_ACCOUNT')}
               </span>
             </div>
           </div>
@@ -49,7 +50,7 @@ const Show = ({ donor }) => {
               <div className="p-2 bg-indigo-500 rounded-lg">
                 <CreditCard size={20} />
               </div>
-              <p className="text-indigo-100 text-sm font-medium">Monthly Commitment</p>
+              <p className="text-indigo-100 text-sm font-medium">{local('IDS_DONOR_MONTHLY_COMMITMENT')}</p>
             </div>
             <h2 className="text-3xl font-bold">
               {formatAmount(donor.donation_amount)}
@@ -62,39 +63,39 @@ const Show = ({ donor }) => {
         <div className="lg:col-span-2">
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-7 py-4">
-              <h3 className="font-bold text-slate-800">Complete Information</h3>
+              <h3 className="font-bold text-slate-800">{local('IDS_DONOR_COMPLETE_INFORMATION')}</h3>
             </div>
             <div className="p-7">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6">
                 
                 <DetailBox 
                   icon={<Phone size={16} className="text-slate-400" />}
-                  label="Phone Number" 
+                  label={local('IDS_DONOR_PHONE_NUMBER')} 
                   value={donor.phone} 
                 />
 
                 <DetailBox 
                   icon={<Mail size={16} className="text-slate-400" />}
-                  label="Email Address" 
-                  value={donor.email || 'No email provided'} 
+                  label={local('IDS_DONOR_EMAIL_ADDRESS')} 
+                  value={donor.email || local('IDS_DONOR_NO_EMAIL')} 
                 />
 
                 <DetailBox 
                   icon={<Activity size={16} className="text-slate-400" />}
-                  label="Donor Type" 
+                  label={local('IDS_DONOR_DONOR_TYPE')} 
                   value={donor.donor_type} 
                 />
 
                 <DetailBox 
                   icon={<Calendar size={16} className="text-slate-400" />}
-                  label="Member Since" 
+                  label={local('IDS_DONOR_MEMBER_SINCE')} 
                   value={new Date(donor.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} 
                 />
 
                 <div className="col-span-full">
                   <DetailBox 
                     icon={<MapPin size={16} className="text-slate-400" />}
-                    label="Physical Address" 
+                    label={local('IDS_DONOR_PHYSICAL_ADDRESS')} 
                     value={donor.address} 
                   />
                 </div>
@@ -114,7 +115,7 @@ const DetailBox = ({ label, value, icon }) => (
       {icon} {label}
     </label>
     <p className="text-slate-800 font-semibold text-lg leading-relaxed">
-      {value || <span className="text-slate-300 italic font-normal text-sm">Not Provided</span>}
+      {value || <span className="text-slate-300 italic font-normal text-sm">{local('IDS_STUDENT_NOT_PROVIDED')}</span>}
     </p>
   </div>
 );

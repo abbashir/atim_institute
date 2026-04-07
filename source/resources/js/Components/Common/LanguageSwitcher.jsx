@@ -23,13 +23,14 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLanguageChange = (langCode) => {
+  const handleLanguageChange = async (langCode) => {
+    console.log("langCode: ", langCode)
     if (langCode === i18n.language) {
       setIsOpen(false);
       return;
     }
     // 1. Instant client-side update
-    i18n.changeLanguage(langCode);
+    await i18n.changeLanguage(langCode);
     setIsOpen(false);
   };
 
@@ -44,7 +45,7 @@ export default function LanguageSwitcher() {
       >
         {/* Globe Icon */}
         <img
-          src="/images/admin/language_icon.svg"
+          src="/images/language_icon.svg"
           alt="Language"
           className="w-5 h-5 text-gray-600"
         />
@@ -66,7 +67,7 @@ export default function LanguageSwitcher() {
 
         {/* Arrow Bottom */}
         <img
-          src="/images/admin/arrow_bottom.svg"
+          src="/images/arrow_bottom.svg"
           alt="Toggle"
           className={`w-3 h-3 transition-transform duration-200 mt-0.5 ${
             isOpen ? "rotate-180" : ""

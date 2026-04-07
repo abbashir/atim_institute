@@ -5,6 +5,7 @@ import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, User, Phone, MapPin, H
 import {error, success} from "@/Utils/Notify.js";
 import {formatAmount} from "@/Utils/format.js";
 import Pagination from "@/Components/Admin/Common/Pagination.jsx";
+import { local } from "@/Utils/Helper.js";
 
 const Index = ({ donors, filters }) => {
   // Local state for search input
@@ -33,12 +34,11 @@ const Index = ({ donors, filters }) => {
     updateFilters('', filters.status);
   };
 
-  const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this donor? This action cannot be undone.')) {
+const handleDelete = (id) => {
+    if (confirm(local('IDS_DONOR_DELETE_CONFIRM'))) {
       router.delete(route('admin.donors.destroy', id), {
         preserveScroll: true,
         onSuccess: (page) => {
-          // If your AdminLayout isn't already watching flash, call it here:
           if (page.props.flash.success) {
             success(page.props.flash.success);
           }
@@ -47,15 +47,15 @@ const Index = ({ donors, filters }) => {
           }
         },
         onError: () => {
-          error("Failed to delete donor. They may have related records.");
+          error(local('IDS_DONOR_DELETE_ERROR'));
         },
       });
     }
   };
 
   return (
-    <AdminLayout pageName="Donor Management">
-      <Head title="Donors" />
+    <AdminLayout pageName={local('IDS_DONOR_LIST')}>
+      <Head title={local('IDS_DONOR_LIST')} />
 
       {/* Action Bar */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -70,7 +70,7 @@ const Index = ({ donors, filters }) => {
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search by name or phone..."
+              placeholder={local('IDS_DONOR_SEARCH')}
               className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-11 pr-10 outline-none focus:border-indigo-600 shadow-sm"
             />
             {searchValue && (
@@ -87,9 +87,9 @@ const Index = ({ donors, filters }) => {
               onChange={handleStatusChange}
               className="w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-4 pr-10 outline-none focus:border-indigo-600 shadow-sm transition-all font-medium text-slate-700"
             >
-              <option value="">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option value="">{local('IDS_DONOR_ALL_STATUS')}</option>
+              <option value="Active">{local('IDS_DONOR_ACTIVE')}</option>
+              <option value="Inactive">{local('IDS_DONOR_INACTIVE')}</option>
             </select>
             <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           </div>
@@ -100,7 +100,7 @@ const Index = ({ donors, filters }) => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white hover:bg-indigo-700 transition shadow-md"
         >
           <Plus size={18} />
-          Add Donor
+          {local('IDS_SIDEBAR_ADD_DONOR')}
         </Link>
       </div>
 
@@ -110,11 +110,11 @@ const Index = ({ donors, filters }) => {
           <table className="w-full table-auto text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase text-xs font-bold tracking-wider">
-                <th className="px-6 py-4">Donor Info</th>
-                <th className="px-6 py-4">Contact & Type</th>
-                <th className="px-6 py-4 text-right">Commitment</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4">{local('IDS_DONOR_INFO')}</th>
+                <th className="px-6 py-4">{local('IDS_DONOR_CONTACT_TYPE')}</th>
+                <th className="px-6 py-4 text-right">{local('IDS_DONOR_COMMITMENT')}</th>
+                <th className="px-6 py-4">{local('IDS_DONOR_STATUS')}</th>
+                <th className="px-6 py-4 text-right">{local('IDS_DONOR_ACTIONS')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -150,7 +150,7 @@ const Index = ({ donors, filters }) => {
                           <span className="font-bold text-slate-900 flex items-center gap-1">
                             {formatAmount(donor.donation_amount)}
                           </span>
-                          <span className="text-[10px] text-slate-400 uppercase">Fixed Amount</span>
+                          <span className="text-[10px] text-slate-400 uppercase">{local('IDS_DONOR_FIXED_AMOUNT')}</span>
                        </div>
                     </td>
                     <td className="px-6 py-4">
@@ -171,7 +171,7 @@ const Index = ({ donors, filters }) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-slate-500">No donor records found.</td>
+                  <td colSpan="5" className="px-6 py-10 text-center text-slate-500">{local('IDS_DONOR_NO_RECORDS')}</td>
                 </tr>
               )}
             </tbody>
