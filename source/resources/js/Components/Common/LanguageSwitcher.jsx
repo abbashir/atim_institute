@@ -24,13 +24,13 @@ export default function LanguageSwitcher() {
   }, []);
 
   const handleLanguageChange = async (langCode) => {
-    console.log("langCode: ", langCode)
     if (langCode === i18n.language) {
       setIsOpen(false);
       return;
     }
     // 1. Instant client-side update
     await i18n.changeLanguage(langCode);
+    window.location.reload();
     setIsOpen(false);
   };
 
