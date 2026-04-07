@@ -243,20 +243,15 @@ class DonationController extends Controller
     // --- Individual Summary Logic ---
     $individualData = null;
     if ($request->donor_id) {
-      $donor = Donor::with(['donations' => function ($q) use ($currentYear) {
-        $q->where('payment_year', $currentYear)->orderBy('paid_at', 'desc');
+      // Fetch donor with all their donations, ordered newest to oldest
+      $donor = Donor::with(['donations' => function ($q) {
+        $q->orderBy('created_at', 'desc');
       }])->findOrFail($request->donor_id);
-
-      // Calculate Due Months for Monthly Donors
-      $paidMonths = $donor->donations->pluck('payment_month')->toArray();
-      $allMonths = collect(range(1, 12))->map(fn($m) => Carbon::create(null, $m, 1)->format('F ' . $currentYear));
 
       $individualData = [
         'donor' => $donor,
         'history' => $donor->donations,
-        'due_months' => $donor->donor_type === DonorType::MONTHLY
-          ? $allMonths->filter(fn($m) => !in_array($m, $paidMonths))->values()
-          : []
+        'total_amount' => $donor->donations->sum('amount') // Total calculation
       ];
     }
 
