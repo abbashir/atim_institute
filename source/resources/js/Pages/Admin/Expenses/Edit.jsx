@@ -6,6 +6,7 @@ import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
 import {error, success} from "@/Utils/Notify.js";
 import compressImage from "@/Utils/index.js";
+import DatePicker from "react-datepicker";
 
 const Edit = ({ expense, categories }) => {
   const { data, setData, post, processing, errors } = useForm({
@@ -58,14 +59,28 @@ const Edit = ({ expense, categories }) => {
           </div>
 
           <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InputField
-              label="Expense Date"
-              type="date"
-              required
-              value={data.expense_date}
-              onChange={e => setData('expense_date', e.target.value)}
-              error={errors.expense_date}
-            />
+            <div>
+              <label className="mb-2.5 block text-black font-medium">
+                Expense Date <span className="text-red-500">*</span>
+              </label>
+              <DatePicker
+                selected={data.expense_date ? new Date(data.expense_date) : null}
+                onChange={(date) =>
+                  setData('expense_date', date ? date.toISOString().split('T')[0] : '')
+                }
+                dateFormat="dd-MM-yyyy"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={new Date()}
+                placeholderText="Select Expense Date"
+                className="w-full rounded-lg border-[1.5px] border-slate-300 bg-white py-3 px-5 font-medium outline-none transition focus:border-indigo-600"
+                wrapperClassName="w-full"
+              />
+              {errors.expense_date && (
+                <p className="mt-1 text-sm text-red-500">{errors.expense_date}</p>
+              )}
+            </div>
 
             <SelectField
               label="Expense Category"

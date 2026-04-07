@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Edit, MapPin, Phone, User, BookOpen, Users, Calendar } from 'lucide-react';
+import {formatDateDisplay} from "@/Utils/format.js";
 
 const Show = ({ student }) => {
     console.log("student: ",student);
@@ -83,7 +84,7 @@ const Show = ({ student }) => {
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
               <DetailItem label="Full Name" value={student.full_name} />
               <DetailItem label="Gender" value={student.gender} />
-              <DetailItem label="Date of Birth" value={new Date(student.date_of_birth).toLocaleDateString()} />
+              <DetailItem label="Date of Birth" value={formatDateDisplay(student.date_of_birth)} />
               <DetailItem label="Blood Group" value={student.blood_group} />
               <DetailItem label="Class" value={student.class} />
               <DetailItem label="Roll Number" value={student.roll_number} />
