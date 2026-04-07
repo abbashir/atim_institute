@@ -6,7 +6,7 @@
     @include('components.hero')
 
     {{-- 3. Mission / Features Section --}}
-    <section class="py-24 bg-[#eef6f3] overflow-hidden">
+    <section id="our-mission" class="py-24 bg-[#eef6f3] overflow-hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
@@ -80,7 +80,7 @@
     </section>
 
     {{-- 4. Orphan Profiles Grid --}}
-    <section class="py-24 gradient-emerald">
+    <section id="sponsor-an-orphan" class="py-24 gradient-emerald">
         <div class="max-w-7xl mx-auto px-6">
             {{-- Section Header --}}
             <div class="text-center mb-16">

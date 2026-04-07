@@ -1,4 +1,4 @@
-<section class="py-24 bg-cream-light flex justify-center items-center" x-data="{ amount: 2500, type: 'one-time' }">
+<section id="donate" class="py-24 bg-cream-light flex justify-center items-center" x-data="{ amount: 2500, type: 'one-time' }">
     <div class="max-w-4xl w-full px-6 text-center">
         <span class="text-[#c59436] font-bold tracking-[0.2em] uppercase text-[10px] mb-2 block">Make a Donation</span>
 

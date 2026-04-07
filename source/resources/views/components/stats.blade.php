@@ -1,4 +1,4 @@
-<section class="py-24 gradient-emerald text-white">
+<section id="programs" class="py-24 gradient-emerald text-white">
     <div class="max-w-7xl mx-auto px-6">
 
         {{-- Section Header --}}

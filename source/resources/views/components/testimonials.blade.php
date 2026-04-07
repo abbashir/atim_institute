@@ -1,4 +1,4 @@
-<section class="py-24 bg-cream-dark">
+<section id="about-us" class="py-24 bg-cream-dark">
     <div class="max-w-7xl mx-auto px-6">
 
         {{-- Section Header --}}

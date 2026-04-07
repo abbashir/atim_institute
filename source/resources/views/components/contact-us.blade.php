@@ -1,4 +1,4 @@
-<section class="py-24 bg-cream-light flex justify-center items-center">
+<section id="contact" class="py-24 bg-cream-light flex justify-center items-center">
     <div class="max-w-4xl w-full px-6">
 
         {{-- Section Header --}}
