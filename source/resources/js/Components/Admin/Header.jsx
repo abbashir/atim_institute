@@ -4,6 +4,7 @@ import {
   Menu, Search, Bell, Moon, ChevronDown,
   UserCircle, Settings, LifeBuoy, LogOut
 } from 'lucide-react';
+import LanguageSwitcher from '@/Components/Common/LanguageSwitcher'; // <-- 1. Import the new component
 
 const Header = ({ setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,6 +56,9 @@ const Header = ({ setSidebarOpen }) => {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2 md:gap-4">
+
+        {/* --- 2. Insert the Language Switcher Here --- */}
+        <LanguageSwitcher />
 
         {/* Dark Mode Toggle */}
         <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">
@@ -108,7 +112,6 @@ const Header = ({ setSidebarOpen }) => {
                   Edit profile
                 </a>
                 <a href={route('admin.password.update')}
-
                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
                   <Settings size={20} strokeWidth={1.5} />
                   Account settings

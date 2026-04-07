@@ -3,6 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import {Head, router} from '@inertiajs/react';
 import {Users, DollarSign, Zap, Calendar, Search, AlertCircle, CheckCircle, User} from 'lucide-react';
 import {formatAmount, formatNumber} from "@/Utils/format.js";
+import { local } from "@/Utils/Helper.js";
 
 export default function Summary({summary, donors, individualData, filters, recentDonations}) {
   const [activeTab, setActiveTab] = useState(filters.donor_id ? 'individual' : 'month');
@@ -171,7 +172,7 @@ export default function Summary({summary, donors, individualData, filters, recen
       <div className="space-y-6">
         {/* Search & Select Donor - Searchable Dropdown */}
         <div className="max-w-md bg-white p-4 rounded-sm border border-slate-200 shadow-sm">
-          <label className="mb-2.5 block text-sm font-bold text-black">Search & Select Donor</label>
+          <label className="mb-2.5 block text-sm font-bold text-black">{local('IDS_ADMIN__AGENT_LOGIN')} Search & Select Donor</label>
 
           <div className="relative" ref={dropdownRef}>
             <div className="relative">
