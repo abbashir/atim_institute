@@ -26,10 +26,12 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
 
             <div class="flex items-center gap-2">
-                <div class="text-[#c59436] text-2xl">🌙</div>
-                <div class="font-bold text-xl tracking-tight">
-                    Darus Salam <span class="text-[#c59436]">Foundation</span>
-                </div>
+                <a href="/" class="flex items-center gap-2">
+                    <div class="text-[#c59436] text-2xl">🌙</div>
+                    <div class="font-bold text-xl tracking-tight">
+                        Darus Salam <span class="text-[#c59436]">Foundation</span>
+                    </div>
+                </a>
             </div>
 
             <div class="hidden lg:flex items-center space-x-8 text-[12px] font-medium uppercase tracking-wider">

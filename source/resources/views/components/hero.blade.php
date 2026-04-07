@@ -1,4 +1,4 @@
-<section class="relative min-h-[750px] flex items-center justify-center pt-32 pb-48 overflow-hidden">
+<section id="home" class="relative min-h-[750px] flex items-center justify-center pt-32 pb-48 overflow-hidden">
     <div class="absolute inset-0 z-0">
         <img src="/images/hero-bg.jpg" class="w-full h-full object-cover" alt="Orphan children smiling">
         <div class="absolute inset-0 bg-green-950/70 mix-blend-multiply"></div>
