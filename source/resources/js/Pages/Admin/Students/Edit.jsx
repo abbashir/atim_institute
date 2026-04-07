@@ -9,6 +9,7 @@ import {error, success} from "@/Utils/Notify.js";
 import compressImage from "@/Utils/index.js";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { local } from "@/Utils/Helper.js";
 
 const Edit = ({ student }) => {
   // Initialize form with existing student data
@@ -64,14 +65,14 @@ const Edit = ({ student }) => {
     });
   };
 
-  return (
-    <AdminLayout pageName="Edit Student">
-      <Head title={`Edit - ${student.full_name}`} />
+return (
+    <AdminLayout pageName={local('IDS_STUDENT_EDIT')}>
+      <Head title={`${local('IDS_STUDENT_EDIT')} - ${student.full_name}`} />
 
       <div className="mb-6">
         <Link href={route('admin.students.index')} className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition">
           <ArrowLeft size={18} />
-          Back to List
+          {local('IDS_STUDENT_BACK_TO_LIST')}
         </Link>
       </div>
 
@@ -82,29 +83,29 @@ const Edit = ({ student }) => {
           <div className="border-b border-slate-200 px-7 py-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <User size={18} className="text-indigo-600" />
-              <h3 className="font-medium text-[#1C2434]">Basic Information</h3>
+              <h3 className="font-medium text-[#1C2434]">{local('IDS_STUDENT_BASIC_INFORMATION')}</h3>
             </div>
             <div className="flex items-center gap-2">
-                 <span className="text-xs font-medium text-slate-400 uppercase">Current Status:</span>
+                 <span className="text-xs font-medium text-slate-400 uppercase">{local('IDS_STUDENT_CURRENT_STATUS')}:</span>
                  <select 
                     value={data.status} 
                     onChange={e => setData('status', e.target.value)}
                     className="text-xs font-bold border-none bg-slate-100 rounded px-2 py-1 focus:ring-0"
                  >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active">{local('IDS_STUDENT_ACTIVE')}</option>
+                    <option value="Inactive">{local('IDS_STUDENT_INACTIVE')}</option>
                  </select>
             </div>
           </div>
           <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InputField label="Full Name" required value={data.full_name} onChange={e => setData('full_name', e.target.value)} error={errors.full_name} />
-            <SelectField label="Gender" required value={data.gender} onChange={e => setData('gender', e.target.value)} error={errors.gender}
+            <InputField label={local('IDS_STUDENT_FULL_NAME')} required value={data.full_name} onChange={e => setData('full_name', e.target.value)} error={errors.full_name} />
+            <SelectField label={local('IDS_STUDENT_GENDER')} required value={data.gender} onChange={e => setData('gender', e.target.value)} error={errors.gender}
               options={[{ label: 'Male', value: 'Male' }, { label: 'Female', value: 'Female' }, { label: 'Other', value: 'Other' }]}
             />
 
             <div>
               <label className="mb-2.5 block text-black font-medium">
-                Date of Birth <span className="text-red-500">*</span>
+                {local('IDS_STUDENT_DATE_OF_BIRTH')} <span className="text-red-500">*</span>
               </label>
               <DatePicker
                 selected={data.date_of_birth ? new Date(data.date_of_birth) : null}
@@ -116,7 +117,7 @@ const Edit = ({ student }) => {
                 showYearDropdown
                 dropdownMode="select"
                 maxDate={new Date()}
-                placeholderText="Select date of birth"
+                placeholderText={local('IDS_STUDENT_SELECT_DATE_OF_BIRTH')}
                 className="w-full rounded-lg border-[1.5px] border-slate-300 bg-white py-3 px-5 font-medium outline-none transition focus:border-indigo-600"
                 wrapperClassName="w-full"
               />
@@ -125,16 +126,16 @@ const Edit = ({ student }) => {
               )}
             </div>
 
-            <SelectField label="Blood Group" value={data.blood_group} onChange={e => setData('blood_group', e.target.value)} error={errors.blood_group}
+            <SelectField label={local('IDS_STUDENT_BLOOD_GROUP')} value={data.blood_group} onChange={e => setData('blood_group', e.target.value)} error={errors.blood_group}
               options={[
-                { label: 'Select Blood Group', value: '' }, { label: 'A+', value: 'A+' }, { label: 'A-', value: 'A-' },
+                { label: local('IDS_STUDENT_SELECT_BLOOD_GROUP'), value: '' }, { label: 'A+', value: 'A+' }, { label: 'A-', value: 'A-' },
                 { label: 'B+', value: 'B+' }, { label: 'B-', value: 'B-' }, { label: 'O+', value: 'O+' },
                 { label: 'O-', value: 'O-' }, { label: 'AB+', value: 'AB+' }, { label: 'AB-', value: 'AB-' },
               ]}
             />
 
             <div className="col-span-full">
-              <label className="mb-2.5 block text-black font-medium">Change Photo</label>
+              <label className="mb-2.5 block text-black font-medium">{local('IDS_STUDENT_CHANGE_PHOTO')}</label>
               <div className="flex items-center gap-4">
                 {student.photo_url && !data.photo && (
                     <img src={student.photo_url} className="h-16 w-16 rounded-lg object-cover border border-slate-200" alt="Current" />
@@ -159,29 +160,29 @@ const Edit = ({ student }) => {
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-7 py-4 flex items-center gap-2">
               <BookOpen size={18} className="text-indigo-600" />
-              <h3 className="font-medium text-[#1C2434]">Academic Info</h3>
+              <h3 className="font-medium text-[#1C2434]">{local('IDS_STUDENT_ACADEMIC_INFO')}</h3>
             </div>
             <div className="p-7 space-y-4">
-              <InputField label="Class" value={data.class} onChange={e => setData('class', e.target.value)} error={errors.class} />
-              <InputField label="Roll Number" type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} />
-              <InputField label="School Name"
+              <InputField label={local('IDS_STUDENT_CLASS')} value={data.class} onChange={e => setData('class', e.target.value)} error={errors.class} />
+              <InputField label={local('IDS_STUDENT_ROLL_NUMBER')} type="number" value={data.roll_number} onChange={e => setData('roll_number', e.target.value)} error={errors.roll_number} />
+              <InputField label={local('IDS_STUDENT_SCHOOL_NAME')}
                           value={data.school}
                           onChange={e => setData('school', e.target.value)}
                           error={errors.school}
-                          placeholder="Enter school name" />
+                          placeholder={local('IDS_STUDENT_SCHOOL_NAME')} />
             </div>
           </div>
 
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-7 py-4 flex items-center gap-2">
               <Users size={18} className="text-indigo-600" />
-              <h3 className="font-medium text-[#1C2434]">Guardian Info</h3>
+              <h3 className="font-medium text-[#1C2434]">{local('IDS_STUDENT_GUARDIAN_INFO')}</h3>
             </div>
             <div className="p-7 space-y-4">
-              <InputField label="Father's Name" required value={data.father_name} onChange={e => setData('father_name', e.target.value)} error={errors.father_name} />
-              <InputField label="Father's Phone" value={data.father_phone} onChange={e => setData('father_phone', e.target.value)} />
-              <InputField label="Mother's Name" required value={data.mother_name} onChange={e => setData('mother_name', e.target.value)} error={errors.mother_name} />
-              <InputField label="Mother's Phone" value={data.mother_phone} onChange={e => setData('mother_phone', e.target.value)} />
+              <InputField label={local('IDS_STUDENT_FATHERS_NAME')} required value={data.father_name} onChange={e => setData('father_name', e.target.value)} error={errors.father_name} />
+              <InputField label={local('IDS_STUDENT_FATHERS_PHONE')} value={data.father_phone} onChange={e => setData('father_phone', e.target.value)} />
+              <InputField label={local('IDS_STUDENT_MOTHERS_NAME')} required value={data.mother_name} onChange={e => setData('mother_name', e.target.value)} error={errors.mother_name} />
+              <InputField label={local('IDS_STUDENT_MOTHERS_PHONE')} value={data.mother_phone} onChange={e => setData('mother_phone', e.target.value)} />
             </div>
           </div>
         </div>
@@ -190,21 +191,21 @@ const Edit = ({ student }) => {
         <div className="rounded-sm border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-7 py-4 flex items-center gap-2">
             <MapPin size={18} className="text-indigo-600" />
-            <h3 className="font-medium text-[#1C2434]">Address Information</h3>
+            <h3 className="font-medium text-[#1C2434]">{local('IDS_STUDENT_ADDRESS_INFORMATION')}</h3>
           </div>
           <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="mb-2.5 block text-black font-medium">Present Address <span className="text-rose-500">*</span></label>
+              <label className="mb-2.5 block text-black font-medium">{local('IDS_STUDENT_PRESENT_ADDRESS')} <span className="text-rose-500">*</span></label>
               <textarea rows="4" className={`w-full rounded border-[1.5px] py-3 px-5 outline-none transition focus:border-indigo-600 ${errors.present_address ? 'border-rose-500' : 'border-slate-200'}`}
                 value={data.present_address} onChange={e => setData('present_address', e.target.value)}
               ></textarea>
             </div>
             <div>
               <div className="mb-2.5 flex items-center justify-between">
-                <label className="block text-black font-medium">Permanent Address</label>
+                <label className="block text-black font-medium">{local('IDS_STUDENT_PERMANENT_ADDRESS')}</label>
                 <label className="flex items-center gap-2 cursor-pointer text-xs text-indigo-600 font-semibold">
                   <input type="checkbox" checked={data.same_as_present} onChange={handleAddressSync} className="h-4 w-4 rounded border-slate-300 text-indigo-600" />
-                  Same as Present
+                  {local('IDS_STUDENT_SAME_AS_PRESENT')}
                 </label>
               </div>
               <textarea rows="4" disabled={data.same_as_present} className={`w-full rounded border-[1.5px] border-slate-200 py-3 px-5 outline-none transition focus:border-indigo-600 ${data.same_as_present ? 'bg-slate-50 opacity-70' : ''}`}
@@ -215,10 +216,10 @@ const Edit = ({ student }) => {
         </div>
 
         <div className="flex justify-end gap-4 pb-10">
-          <Link href={route('admin.students.index')} className="rounded-lg border border-slate-200 px-8 py-3 font-medium text-slate-600 hover:bg-slate-50 transition-all">Cancel</Link>
+          <Link href={route('admin.students.index')} className="rounded-lg border border-slate-200 px-8 py-3 font-medium text-slate-600 hover:bg-slate-50 transition-all">{local('IDS_STUDENT_CANCEL')}</Link>
           <button disabled={processing} type="submit" className="flex items-center gap-2 rounded-lg bg-indigo-600 px-10 py-3 font-medium text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all">
             <Save size={18} />
-            {processing ? 'Updating...' : 'Update Student'}
+            {processing ? local('IDS_STUDENT_UPDATING') : local('IDS_STUDENT_UPDATE_STUDENT')}
           </button>
         </div>
       </form>
