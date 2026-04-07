@@ -3,13 +3,14 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Edit, MapPin, Phone, User, BookOpen, Users, Calendar } from 'lucide-react';
 import {formatDateDisplay} from "@/Utils/format.js";
+import { local } from "@/Utils/Helper.js";
 
 const Show = ({ student }) => {
     console.log("student: ",student);
 
   return (
-    <AdminLayout pageName="Student Profile">
-      <Head title={`Profile - ${student.full_name}`} />
+    <AdminLayout pageName={local('IDS_STUDENT_PROFILE')}>
+      <Head title={`${local('IDS_STUDENT_PROFILE')} - ${student.full_name}`} />
 
       {/* Header Actions */}
       <div className="mb-6 flex items-center justify-between">
@@ -18,14 +19,14 @@ const Show = ({ student }) => {
           className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-colors"
         >
           <ArrowLeft size={20} />
-          <span>Back to List</span>
+          <span>{local('IDS_STUDENT_BACK_TO_LIST')}</span>
         </Link>
         <Link
           href={route('admin.students.edit', student.id)}
           className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition shadow-sm"
         >
           <Edit size={16} />
-          Edit Profile
+          {local('IDS_STUDENT_EDIT_PROFILE')}
         </Link>
       </div>
 
@@ -43,10 +44,10 @@ const Show = ({ student }) => {
               <span className={`absolute bottom-2 right-2 h-4 w-4 rounded-full border-2 border-white ${student.status === 'Active' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
             </div>
             <h3 className="text-xl font-bold text-slate-900">{student.full_name}</h3>
-            <p className="text-sm font-medium text-indigo-600">{student.class} | Roll: {student.roll_number}</p>
+            <p className="text-sm font-medium text-indigo-600">{student.class} | {local('IDS_STUDENT_ROLL')}: {student.roll_number}</p>
             <div className="mt-4 flex justify-center gap-2">
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 uppercase">
-                {student.blood_group || 'N/A'}
+                {student.blood_group || local('IDS_STUDENT_NA')}
               </span>
               <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-600">
                 {student.school}
@@ -57,16 +58,16 @@ const Show = ({ student }) => {
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-6 py-4 flex items-center gap-2 font-bold text-slate-800">
               <Phone size={18} className="text-indigo-600" />
-              Quick Contact
+              {local('IDS_STUDENT_QUICK_CONTACT')}
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Father's Phone</label>
-                <p className="text-slate-700 font-medium">{student.father_phone || 'N/A'}</p>
+                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">{local('IDS_STUDENT_FATHERS_PHONE')}</label>
+                <p className="text-slate-700 font-medium">{student.father_phone || local('IDS_STUDENT_NA')}</p>
               </div>
               <div>
-                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Mother's Phone</label>
-                <p className="text-slate-700 font-medium">{student.mother_phone || 'N/A'}</p>
+                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">{local('IDS_STUDENT_MOTHERS_PHONE')}</label>
+                <p className="text-slate-700 font-medium">{student.mother_phone || local('IDS_STUDENT_NA')}</p>
               </div>
             </div>
           </div>
@@ -79,17 +80,17 @@ const Show = ({ student }) => {
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-2 font-bold text-slate-800">
               <User size={18} className="text-indigo-600" />
-              Personal & Academic Details
+              {local('IDS_STUDENT_PERSONAL_ACADEMIC_DETAILS')}
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
-              <DetailItem label="Full Name" value={student.full_name} />
-              <DetailItem label="Gender" value={student.gender} />
-              <DetailItem label="Date of Birth" value={formatDateDisplay(student.date_of_birth)} />
-              <DetailItem label="Blood Group" value={student.blood_group} />
-              <DetailItem label="Class" value={student.class} />
-              <DetailItem label="Roll Number" value={student.roll_number} />
-              <DetailItem label="Academic Year" value={student.school} />
-              <DetailItem label="Status" value={student.status} highlight={student.status === 'Active'} />
+              <DetailItem label={local('IDS_STUDENT_FULL_NAME')} value={student.full_name} />
+              <DetailItem label={local('IDS_STUDENT_GENDER')} value={student.gender} />
+              <DetailItem label={local('IDS_STUDENT_DATE_OF_BIRTH')} value={formatDateDisplay(student.date_of_birth)} />
+              <DetailItem label={local('IDS_STUDENT_BLOOD_GROUP')} value={student.blood_group} />
+              <DetailItem label={local('IDS_STUDENT_CLASS')} value={student.class} />
+              <DetailItem label={local('IDS_STUDENT_ROLL_NUMBER')} value={student.roll_number} />
+              <DetailItem label={local('IDS_STUDENT_ACADEMIC_YEAR')} value={student.school} />
+              <DetailItem label={local('IDS_STUDENT_STATUS')} value={student.status} highlight={student.status === 'Active'} />
             </div>
           </div>
 
@@ -97,15 +98,15 @@ const Show = ({ student }) => {
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-2 font-bold text-slate-800">
               <Users size={18} className="text-indigo-600" />
-              Guardian Information
+              {local('IDS_STUDENT_GUARDIAN_INFORMATION')}
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DetailItem label="Father's Name" value={student.father_name} />
-              <DetailItem label="Mother's Name" value={student.mother_name} />
+              <DetailItem label={local('IDS_STUDENT_FATHERS_NAME')} value={student.father_name} />
+              <DetailItem label={local('IDS_STUDENT_MOTHERS_NAME')} value={student.mother_name} />
               {student.local_guardian_name && (
                 <>
-                  <DetailItem label="Local Guardian" value={student.local_guardian_name} />
-                  <DetailItem label="Relation" value={student.local_guardian_relation} />
+                  <DetailItem label={local('IDS_STUDENT_LOCAL_GUARDIAN')} value={student.local_guardian_name} />
+                  <DetailItem label={local('IDS_STUDENT_RELATION')} value={student.local_guardian_relation} />
                 </>
               )}
             </div>
@@ -115,19 +116,19 @@ const Show = ({ student }) => {
           <div className="rounded-sm border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-2 font-bold text-slate-800">
               <MapPin size={18} className="text-indigo-600" />
-              Address Details
+              {local('IDS_STUDENT_ADDRESS_DETAILS')}
             </div>
             <div className="p-6 space-y-6">
               <div>
-                <h4 className="text-sm font-bold text-slate-400 uppercase mb-2">Present Address</h4>
+                <h4 className="text-sm font-bold text-slate-400 uppercase mb-2">{local('IDS_STUDENT_PRESENT_ADDRESS')}</h4>
                 <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-md border border-slate-100">
                   {student.present_address}
                 </p>
               </div>
               <div>
-                <h4 className="text-sm font-bold text-slate-400 uppercase mb-2">Permanent Address</h4>
+                <h4 className="text-sm font-bold text-slate-400 uppercase mb-2">{local('IDS_STUDENT_PERMANENT_ADDRESS')}</h4>
                 <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-md border border-slate-100">
-                  {student.same_as_present ? 'Same as present address' : student.permanent_address}
+                  {student.same_as_present ? local('IDS_STUDENT_SAME_AS_PRESENT_ADDRESS') : student.permanent_address}
                 </p>
               </div>
             </div>
@@ -144,7 +145,7 @@ const DetailItem = ({ label, value, highlight }) => (
   <div>
     <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">{label}</label>
     <p className={`text-slate-800 font-medium ${highlight ? 'text-emerald-600' : ''}`}>
-      {value || <span className="text-slate-300">Not Provided</span>}
+      {value || <span className="text-slate-300">{local('IDS_STUDENT_NOT_PROVIDED')}</span>}
     </p>
   </div>
 );

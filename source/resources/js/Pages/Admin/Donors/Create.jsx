@@ -6,6 +6,7 @@ import SelectField from "@/Components/Form/SelectField.jsx";
 import InputField from "@/Components/Form/InputField.jsx";
 import {DONOR_TYPES} from "@/Constants/index.js";
 import {error, success} from "@/Utils/Notify.js";
+import { local } from "@/Utils/Helper.js";
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -39,12 +40,12 @@ export default function Create() {
   };
 
     return (
-        <AdminLayout pageName="Add New Donor">
-            <Head title="Add Donor" />
+        <AdminLayout pageName={local('IDS_DONOR_ADD_NEW')}>
+            <Head title={local('IDS_DONOR_ADD_NEW')} />
             
             <div className="mb-6">
                 <Link href={route('admin.donors.index')} className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition">
-                    <ArrowLeft size={18} /> Back to List
+                    <ArrowLeft size={18} /> {local('IDS_DONOR_BACK_TO_LIST')}
                 </Link>
             </div>
 
@@ -52,15 +53,15 @@ export default function Create() {
                 <div className="bg-white rounded-sm border border-slate-200 shadow-sm">
                     <div className="border-b border-slate-200 px-7 py-4 flex items-center gap-2">
                         <UserPlus size={18} className="text-indigo-600" />
-                        <h3 className="font-medium text-[#1C2434]">Donor Details</h3>
+                        <h3 className="font-medium text-[#1C2434]">{local('IDS_DONOR_DONOR_DETAILS')}</h3>
                     </div>
 
                     <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Full Name */}
                         <InputField
-                            label="Full Name"
+                            label={local('IDS_DONOR_FULL_NAME')}
                             required
-                            placeholder="Enter donor's full name"
+                            placeholder={local('IDS_DONOR_FULL_NAME')}
                             value={data.full_name}
                             onChange={e => setData('full_name', e.target.value)}
                             error={errors.full_name}
@@ -68,9 +69,9 @@ export default function Create() {
 
                         {/* Phone */}
                         <InputField
-                            label="Phone Number"
+                            label={local('IDS_DONOR_PHONE_NUMBER')}
                             required
-                            placeholder="e.g. 017XXXXXXXX"
+                            placeholder="017XXXXXXXX"
                             value={data.phone}
                             onChange={e => setData('phone', e.target.value)}
                             error={errors.phone}
@@ -78,7 +79,7 @@ export default function Create() {
 
                         {/* Email */}
                         <InputField
-                            label="Email Address"
+                            label={local('IDS_DONOR_EMAIL_ADDRESS')}
                             type="email"
                             placeholder="donor@example.com"
                             value={data.email}
@@ -88,7 +89,7 @@ export default function Create() {
 
                         {/* Donation Amount */}
                         <InputField
-                            label="Donation Amount"
+                            label={local('IDS_DONOR_DONATION_AMOUNT')}
                             type="number"
                             step="0.01"
                             required
@@ -100,7 +101,7 @@ export default function Create() {
 
                         {/* Donor Type */}
                         <SelectField
-                            label="Donor Type"
+                            label={local('IDS_DONOR_DONOR_TYPE')}
                             required
                             value={data.donor_type}
                             onChange={e => setData('donor_type', e.target.value)}
@@ -110,26 +111,26 @@ export default function Create() {
 
                         {/* Status */}
                         <SelectField
-                            label="Status"
+                            label={local('IDS_DONOR_STATUS')}
                             required
                             value={data.status}
                             onChange={e => setData('status', e.target.value)}
                             error={errors.status}
                             options={[
-                                { label: 'Active', value: 'Active' },
-                                { label: 'Inactive', value: 'Inactive' },
+                                { label: local('IDS_DONOR_ACTIVE'), value: 'Active' },
+                                { label: local('IDS_DONOR_INACTIVE'), value: 'Inactive' },
                             ]}
                         />
 
                         {/* Address */}
                         <div className="col-span-full">
                             <label className="mb-2.5 block text-black font-medium text-sm">
-                                Address <span className="text-rose-500">*</span>
+                                {local('IDS_DONOR_ADDRESS')} <span className="text-rose-500">*</span>
                             </label>
                             <textarea
                                 rows="3"
                                 className={`w-full rounded border-[1.5px] py-3 px-5 outline-none transition focus:border-indigo-600 bg-transparent ${errors.address ? 'border-rose-500' : 'border-slate-200'}`}
-                                placeholder="Enter physical address..."
+                                placeholder={local('IDS_DONOR_ADDRESS')}
                                 value={data.address}
                                 onChange={e => setData('address', e.target.value)}
                             ></textarea>
@@ -144,7 +145,7 @@ export default function Create() {
                         href={route('admin.donors.index')} 
                         className="rounded-lg border border-slate-200 px-8 py-3 font-medium text-slate-600 hover:bg-slate-50 transition-all"
                     >
-                        Cancel
+                        {local('IDS_DONOR_CANCEL')}
                     </Link>
                     <button
                         disabled={processing}
@@ -152,7 +153,7 @@ export default function Create() {
                         className="flex items-center gap-2 rounded-lg bg-indigo-600 px-10 py-3 font-medium text-white hover:bg-indigo-700 shadow-lg transition-all"
                     >
                         <Save size={18} />
-                        {processing ? 'Saving...' : 'Save Donor'}
+                        {processing ? local('IDS_DONOR_SAVING') : local('IDS_DONOR_SAVE_DONOR')}
                     </button>
                 </div>
             </form>

@@ -91,26 +91,26 @@ class DonationController extends Controller
       DB::commit();
 
       /************************ Send SMS START *******************************/
-//      $donor = Donor::findOrFail($validated['donor_id']);
-//      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
-//        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
-//        "জাজাকাল্লাহ খাইরান।\n" .
-//        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
-//
-//      // Check SMS Balance
-//      $res = $smsService->getBalance();
-//      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
-//      if ($balance <= 1) {
-//        return redirect()->back()->with('success', 'Donation recorded successfully!')
-//                                 ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
-//      }
-//
-//      // Send SMS
-//      $smsSent = $smsService->sendSms($donor->phone, $message);
-//      if (!$smsSent['success']) {
-//        return redirect()->back()->with('success', 'Donation recorded successfully!')
-//                                 ->with('error', 'SMS Failed: ' . $smsSent['message']);
-//      }
+      $donor = Donor::findOrFail($validated['donor_id']);
+      $message = "সম্মানিত সুধী ({$donor->full_name}), আসসালামু আলাইকুম।\n" .
+        "আপনার {$request->payment_month}/{$request->payment_year} মাসের {$request->amount} টাকা অনুদান গ্রহণ করা হয়েছে।\n" .
+        "জাজাকাল্লাহ খাইরান।\n" .
+        "ধুমিহায়াতপুর দারুস সালাম এতিম খানা।";
+
+      // Check SMS Balance
+      $res = $smsService->getBalance();
+      $balance = isset($res['balance']) ? (float)$res['balance'] : 0;
+      if ($balance <= 1) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+                                 ->with('error', 'SMS Not Sent: Your balance is 0 BDT.');
+      }
+
+      // Send SMS
+      $smsSent = $smsService->sendSms($donor->phone, $message);
+      if (!$smsSent['success']) {
+        return redirect()->back()->with('success', 'Donation recorded successfully!')
+                                 ->with('error', 'SMS Failed: ' . $smsSent['message']);
+      }
       /************************ Send SMS END *******************************/
 
       // 4. Redirect with Success Message
@@ -243,20 +243,15 @@ class DonationController extends Controller
     // --- Individual Summary Logic ---
     $individualData = null;
     if ($request->donor_id) {
-      $donor = Donor::with(['donations' => function ($q) use ($currentYear) {
-        $q->where('payment_year', $currentYear)->orderBy('paid_at', 'desc');
+      // Fetch donor with all their donations, ordered newest to oldest
+      $donor = Donor::with(['donations' => function ($q) {
+        $q->orderBy('created_at', 'desc');
       }])->findOrFail($request->donor_id);
-
-      // Calculate Due Months for Monthly Donors
-      $paidMonths = $donor->donations->pluck('payment_month')->toArray();
-      $allMonths = collect(range(1, 12))->map(fn($m) => Carbon::create(null, $m, 1)->format('F ' . $currentYear));
 
       $individualData = [
         'donor' => $donor,
         'history' => $donor->donations,
-        'due_months' => $donor->donor_type === DonorType::MONTHLY
-          ? $allMonths->filter(fn($m) => !in_array($m, $paidMonths))->values()
-          : []
+        'total_amount' => $donor->donations->sum('amount') // Total calculation
       ];
     }
 

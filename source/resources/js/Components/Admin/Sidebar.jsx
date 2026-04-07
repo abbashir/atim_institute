@@ -11,6 +11,7 @@ import {
   ChevronDown,
   X
 } from 'lucide-react';
+import { local } from "@/Utils/Helper.js";
 
 const SidebarItem = ({ item }) => {
   const { url } = usePage();
@@ -111,49 +112,49 @@ const SidebarItem = ({ item }) => {
 
 const Sidebar = ({ isOpen, setOpen }) => {
   const menuItems = [
-    { icon: LayoutGrid, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: LayoutGrid, label: local('IDS_SIDEBAR_DASHBOARD'), href: '/admin/dashboard' },
     {
       icon: GraduationCap,
-      label: 'Student',
+      label: local('IDS_SIDEBAR_STUDENT'),
       subMenu: [
-        { label: 'Add New', href: '/admin/students/create' },
-        { label: 'Student List', href: '/admin/students' },
+        { label: local('IDS_SIDEBAR_ADD_NEW'), href: '/admin/students/create' },
+        { label: local('IDS_SIDEBAR_STUDENT_LIST'), href: '/admin/students' },
       ]
     },
     {
       icon: HeartHandshake,
-      label: 'Donor Management',
+      label: local('IDS_SIDEBAR_DONOR_MANAGEMENT'),
       subMenu: [
-        { label: 'Add Donor', href: '/admin/donors/create' },
-        { label: 'Donor List', href: '/admin/donors' },
+        { label: local('IDS_SIDEBAR_ADD_DONOR'), href: '/admin/donors/create' },
+        { label: local('IDS_SIDEBAR_DONOR_LIST'), href: '/admin/donors' },
       ]
     },
     {
       icon: Wallet,
-      label: 'Donation Management',
+      label: local('IDS_SIDEBAR_DONATION_MANAGEMENT'),
       subMenu: [
-        { label: 'Monthly Collection', href: '/admin/donations/monthly' },
-        { label: 'On Time Collection', href: '/admin/donations/on-time'},
-        { label: 'Donation Summary', href: '/admin/donations/summary'},
+        { label: local('IDS_SIDEBAR_MONTHLY_COLLECTION'), href: '/admin/donations/monthly' },
+        { label: local('IDS_SIDEBAR_ON_TIME_COLLECTION'), href: '/admin/donations/on-time'},
+        { label: local('IDS_SIDEBAR_DONATION_SUMMARY'), href: '/admin/donations/summary'},
       ]
     },
     {
       icon: Receipt,
-      label: 'Expense Management',
+      label: local('IDS_SIDEBAR_EXPENSE_MANAGEMENT'),
       subMenu: [
-        { label: 'Add New', href: '/admin/expenses/create' },
-        { label: 'Expense List', href: '/admin/expenses' },
+        { label: local('IDS_SIDEBAR_ADD_NEW'), href: '/admin/expenses/create' },
+        { label: local('IDS_SIDEBAR_EXPENSE_LIST'), href: '/admin/expenses' },
       ]
     },
     {
       icon: FileBarChart,
-      label: 'Reports',
+      label: local('IDS_SIDEBAR_REPORTS'),
       subMenu: [
-        { label: 'Donation Report', href: '/admin/reports/donations'},
-        { label: 'Expense Report', href: '/admin/reports/expenses' },
+        { label: local('IDS_SIDEBAR_DONATION_REPORT'), href: '/admin/reports/donations'},
+        { label: local('IDS_SIDEBAR_EXPENSE_REPORT'), href: '/admin/reports/expenses' },
       ]
     },
-    { icon: Settings, label: 'Settings', href: '/admin/settings' },
+    { icon: Settings, label: local('IDS_SIDEBAR_SETTINGS'), href: '/admin/settings' },
   ];
 
   return (
@@ -176,7 +177,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             </button>
           </div>
 
-          <p className="mb-4 px-4 text-xs font-semibold tracking-widest text-slate-400 uppercase">Menu</p>
+          <p className="mb-4 px-4 text-xs font-semibold tracking-widest text-slate-400 uppercase">{local('IDS_SIDEBAR_MENU')}</p>
 
           <nav className="flex-1 space-y-1 overflow-y-auto px-2 custom-scrollbar">
             {menuItems.map((item, index) => (

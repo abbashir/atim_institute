@@ -1,11 +1,46 @@
-import React, {useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import {Head, router} from '@inertiajs/react';
 import {Users, DollarSign, Zap, Calendar, Search, AlertCircle, CheckCircle, User} from 'lucide-react';
 import {formatAmount, formatNumber} from "@/Utils/format.js";
+import { local } from "@/Utils/Helper.js";
 
 export default function Summary({summary, donors, individualData, filters, recentDonations}) {
   const [activeTab, setActiveTab] = useState(filters.donor_id ? 'individual' : 'month');
+
+  // --- Searchable Dropdown Logic ---
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Sync search input text with the currently selected donor on load/filter change
+  useEffect(() => {
+    if (filters.donor_id) {
+      const selected = donors.find(d => d.id == filters.donor_id);
+      if (selected) {
+        setSearchQuery(`${selected.full_name} (${selected.phone})`);
+      }
+    } else {
+      setSearchQuery('');
+    }
+  }, [filters.donor_id, donors]);
+
+  // Filter donors based on typing
+  const filteredDonors = donors.filter(d =>
+    d.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    d.phone.includes(searchQuery)
+  );
 
   const handleDonorSelect = (id) => {
     router.get(route('admin.donations.summary'), {donor_id: id}, {
@@ -133,102 +168,150 @@ export default function Summary({summary, donors, individualData, filters, recen
     </div>)}
 
     {/* Tab 2: Individual Summary */}
-    {activeTab === 'individual' && (<div className="space-y-6">
-      <div className="max-w-md bg-white p-4 rounded-sm border border-slate-200 shadow-sm">
-        <label className="mb-2.5 block text-sm font-bold text-black">Search & Select Donor</label>
-        <div className="relative">
-          <select
-            value={filters.donor_id || ''}
-            onChange={(e) => handleDonorSelect(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 py-3 pl-10 pr-5 outline-none focus:border-indigo-600 appearance-none bg-transparent"
-          >
-            <option value="">Select a donor...</option>
-            {donors.map(d => (<option key={d.id} value={d.id}>{d.full_name} ({d.phone})</option>))}
-          </select>
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
-        </div>
-      </div>
+    {activeTab === 'individual' && (
+      <div className="space-y-6">
+        {/* Search & Select Donor - Searchable Dropdown */}
+        <div className="max-w-md bg-white p-4 rounded-sm border border-slate-200 shadow-sm">
+          <label className="mb-2.5 block text-sm font-bold text-black">{local('IDS_ADMIN__AGENT_LOGIN')} Search & Select Donor</label>
 
-      {individualData ? (<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Donor Profile Info */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="rounded-sm border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col items-center">
-              <div
-                className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-4">
-                <User size={40}/>
+          <div className="relative" ref={dropdownRef}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search by name or phone..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsDropdownOpen(true);
+                }}
+                onClick={() => setIsDropdownOpen(true)}
+                className="w-full rounded-lg border border-slate-200 py-3 pl-10 pr-5 outline-none focus:border-indigo-600 bg-transparent"
+              />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+
+              {/* Clear Button (Optional) */}
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    handleDonorSelect(''); // Clear selection in parent/Inertia
+                    setIsDropdownOpen(true);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 font-bold"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Dropdown List */}
+            {isDropdownOpen && (
+              <div className="absolute z-20 mt-1 w-full max-h-60 overflow-y-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 border border-slate-100">
+                {filteredDonors.length > 0 ? (
+                  filteredDonors.map((d) => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                      onClick={() => {
+                        handleDonorSelect(d.id);
+                        setSearchQuery(`${d.full_name} (${d.phone})`);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      <span className="font-medium">{d.full_name}</span>
+                      <span className="text-slate-400 text-xs ml-2">{d.phone}</span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-slate-500 text-center italic">
+                    No donors match your search.
+                  </div>
+                )}
               </div>
-              <h3 className="text-xl font-bold text-black">{individualData.donor.full_name}</h3>
-              <p className="text-sm text-slate-500">{individualData.donor.phone}</p>
-              <span
-                className={`mt-3 rounded-full px-3 py-1 text-xs font-bold ${individualData.donor.donor_type === 'Monthly' ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600'}`}>
-                                            {individualData.donor.donor_type} Donor
-                                        </span>
-            </div>
-            <div className="mt-6 border-t border-slate-100 pt-6">
-              <p className="text-xs font-bold text-slate-400 uppercase mb-2">Address</p>
-              <p className="text-sm text-slate-700">{individualData.donor.address}</p>
-            </div>
-          </div>
-
-          {/* Due Months logic */}
-          {individualData.donor.donor_type === 'Monthly' && (<div
-            className="rounded-sm border border-slate-200 bg-white p-6 shadow-sm border-l-4 border-l-rose-500">
-            <div className="flex items-center gap-2 mb-4 text-rose-600">
-              <AlertCircle size={20}/>
-              <h4 className="font-bold">Unpaid / Due Months</h4>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {individualData.due_months.length > 0 ? (individualData.due_months.map((month, idx) => (
-                <span key={idx}
-                      className="bg-rose-50 text-rose-600 px-3 py-1 rounded-md text-xs font-bold border border-rose-100">
-                                                        {month}
-                                                    </span>))) : (
-                <p className="text-sm text-green-600 font-medium flex items-center gap-1">
-                  <CheckCircle size={14}/> All months paid!
-                </p>)}
-            </div>
-          </div>)}
-        </div>
-
-        {/* Payment History Table */}
-        <div className="lg:col-span-2 rounded-sm border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
-            <h3 className="font-bold text-slate-700">Payment History (Current Year)</h3>
-          </div>
-          <div className="p-4 overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-              <tr
-                className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                <th className="px-4 py-3">Month</th>
-                <th className="px-4 py-3">Amount</th>
-                <th className="px-4 py-3">Date Paid</th>
-                <th className="px-4 py-3">Receipt</th>
-              </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-              {individualData.history.length > 0 ? (individualData.history.map((h, i) => (
-                <tr key={i} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-bold text-slate-700">{h.payment_month}</td>
-                  <td className="px-4 py-3 font-medium">{formatAmount(h.amount)}</td>
-                  <td className="px-4 py-3 text-slate-500 text-sm">{h.paid_at}</td>
-                  <td className="px-4 py-3 text-xs font-mono text-indigo-600">{h.receipt_no}</td>
-                </tr>))) : (<tr>
-                <td colSpan="4" className="text-center py-10 text-slate-400">No payment records found for this
-                  year.
-                </td>
-              </tr>)}
-              </tbody>
-            </table>
+            )}
           </div>
         </div>
-      </div>) : (<div
-        className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50/50">
-        <Search size={40} className="text-slate-300 mb-2"/>
-        <p className="text-slate-500">Please select a donor above to view their summary.</p>
-      </div>)}
-    </div>)}
+
+        {individualData ? (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* Donor Profile Info */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="rounded-sm border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex flex-col items-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-4">
+                    <User size={40} />
+                  </div>
+                  <h3 className="text-xl font-bold text-black">{individualData.donor.full_name}</h3>
+                  <p className="text-sm text-slate-500">{individualData.donor.phone}</p>
+                  <span className={`mt-3 rounded-full px-3 py-1 text-xs font-bold ${individualData.donor.donor_type === 'Monthly' ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600'}`}>
+                    {individualData.donor.donor_type} Donor
+                  </span>
+                </div>
+
+                <div className="mt-6 border-t border-slate-100 pt-6">
+                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Address</p>
+                  <p className="text-sm text-slate-700">{individualData.donor.address || 'N/A'}</p>
+                </div>
+
+                {/* Total Donated Amount Display */}
+                <div className="mt-6 border-t border-slate-100 pt-6">
+                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Total Lifetime Donated</p>
+                  <p className="text-2xl font-bold text-emerald-600">{formatAmount(individualData.total_amount)}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment History Table */}
+            <div className="lg:col-span-2 rounded-sm border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                <h3 className="font-bold text-slate-700">All Payment History</h3>
+              </div>
+              <div className="p-4 overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                  <tr className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                    <th className="px-4 py-3">Date / Month</th>
+                    <th className="px-4 py-3">Amount</th>
+                    <th className="px-4 py-3">Type</th>
+                    <th className="px-4 py-3">Receipt</th>
+                  </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                  {individualData.history.length > 0 ? (
+                    individualData.history.map((h, i) => (
+                      <tr key={i} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 font-bold text-slate-700">
+                          {/* Shows Payment Month if it exists, otherwise falls back to the paid/created date */}
+                          {h.payment_month ? `${h.payment_month} ${h.payment_year || ''}` : h.paid_at || h.created_at}
+                        </td>
+                        <td className="px-4 py-3 font-medium text-slate-700">{formatAmount(h.amount)}</td>
+                        <td className="px-4 py-3 text-slate-500 text-sm">
+                          {h.is_on_time ? 'One-Time' : 'Monthly'}
+                        </td>
+                        <td className="px-4 py-3 text-xs font-mono text-indigo-600">{h.receipt_no || '-'}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="text-center py-10 text-slate-400">
+                        No payment records found.
+                      </td>
+                    </tr>
+                  )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50/50">
+            <Search size={40} className="text-slate-300 mb-2" />
+            <p className="text-slate-500">Please select a donor above to view their summary.</p>
+          </div>
+        )}
+      </div>
+    )}
   </AdminLayout>);
 }
 

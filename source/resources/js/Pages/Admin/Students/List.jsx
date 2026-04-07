@@ -4,6 +4,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit, Trash2, Eye, X, ChevronDown, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import Pagination from "@/Components/Admin/Common/Pagination.jsx";
 import {error, success} from "@/Utils/Notify.js";
+import { local } from "@/Utils/Helper.js";
 
 const Index = ({ students, filters }) => {
   // Local state for the input field
@@ -37,7 +38,7 @@ const Index = ({ students, filters }) => {
     updateFilters('', filters.status);
   };
   const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this student?')) {
+    if (confirm(local('IDS_STUDENT_DELETE_CONFIRM'))) {
       router.delete(route('admin.students.destroy', id), {
         // Prevents the page from jumping back to the top after deletion
         preserveScroll: true,
@@ -48,12 +49,12 @@ const Index = ({ students, filters }) => {
 
         onSuccess: () => {
           // Trigger your global success toast
-          success("Student record deleted successfully.");
+          success(local('IDS_STUDENT_DELETE_SUCCESS'));
         },
 
         onError: (errors) => {
           // Handle cases like 'Student cannot be deleted because of linked records'
-          error("Failed to delete. This student may have active enrollments.");
+          error(local('IDS_STUDENT_DELETE_ERROR'));
           console.error(errors);
         },
       });
@@ -61,7 +62,7 @@ const Index = ({ students, filters }) => {
   };
 
   return (
-    <AdminLayout pageName="Student List">
+    <AdminLayout pageName={local('IDS_STUDENT_LIST')}>
       {/* Action Bar */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
@@ -75,7 +76,7 @@ const Index = ({ students, filters }) => {
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search students..."
+              placeholder={local('IDS_STUDENT_SEARCH')}
               className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-11 pr-10 outline-none focus:border-indigo-600 shadow-sm"
             />
             {searchValue && (
@@ -92,9 +93,9 @@ const Index = ({ students, filters }) => {
               onChange={handleStatusChange}
               className="w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-4 pr-10 outline-none focus:border-indigo-600 shadow-sm transition-all font-medium text-slate-700"
             >
-              <option value="">All Students</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option value="">{local('IDS_STUDENT_ALL_STUDENTS')}</option>
+              <option value="Active">{local('IDS_STUDENT_ACTIVE')}</option>
+              <option value="Inactive">{local('IDS_STUDENT_INACTIVE')}</option>
             </select>
             <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           </div>
@@ -105,7 +106,7 @@ const Index = ({ students, filters }) => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white hover:bg-indigo-700 transition shadow-md"
         >
           <Plus size={18} />
-          Add Student
+          {local('IDS_SIDEBAR_ADD_NEW')}
         </Link>
       </div>
 
@@ -115,11 +116,11 @@ const Index = ({ students, filters }) => {
           <table className="w-full table-auto text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase text-xs font-bold tracking-wider">
-                <th className="px-6 py-4">Student</th>
-                <th className="px-6 py-4">Class Info</th>
-                <th className="px-6 py-4">Guardian</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4">{local('IDS_STUDENT_STUDENT')}</th>
+                <th className="px-6 py-4">{local('IDS_STUDENT_CLASS_INFO')}</th>
+                <th className="px-6 py-4">{local('IDS_STUDENT_GUARDIAN')}</th>
+                <th className="px-6 py-4">{local('IDS_STUDENT_STATUS')}</th>
+                <th className="px-6 py-4 text-right">{local('IDS_STUDENT_ACTIONS')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -141,7 +142,7 @@ const Index = ({ students, filters }) => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-slate-700">{student.class}</p>
-                      <p className="text-xs text-slate-500 text-nowrap">Roll: {student.roll_number} ({student.school})</p>
+                      <p className="text-xs text-slate-500 text-nowrap">{local('IDS_STUDENT_ROLL')}: {student.roll_number} ({student.school})</p>
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <p className="text-slate-700">{student.father_name}</p>
@@ -165,7 +166,7 @@ const Index = ({ students, filters }) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-slate-500">No records found.</td>
+                  <td colSpan="5" className="px-6 py-10 text-center text-slate-500">{local('IDS_STUDENT_NO_RECORDS')}</td>
                 </tr>
               )}
             </tbody>
