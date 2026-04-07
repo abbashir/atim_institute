@@ -11,6 +11,7 @@ import {
   ChevronDown,
   X
 } from 'lucide-react';
+import { local } from "@/Utils/Helper.js";
 
 const SidebarItem = ({ item }) => {
   const { url } = usePage();
@@ -111,7 +112,7 @@ const SidebarItem = ({ item }) => {
 
 const Sidebar = ({ isOpen, setOpen }) => {
   const menuItems = [
-    { icon: LayoutGrid, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: LayoutGrid, label: local('IDS_SIDEBAR_DASHBOARD'), href: '/admin/dashboard' },
     {
       icon: GraduationCap,
       label: 'Student',
