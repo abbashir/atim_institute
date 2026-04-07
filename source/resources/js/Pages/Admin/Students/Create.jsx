@@ -7,6 +7,8 @@ import InputField from "@/Components/Form/InputField.jsx";
 import SelectField from "@/Components/Form/SelectField.jsx";
 import TextareaField from "@/Components/Form/TextareaField.jsx";
 import compressImage from "@/Utils/index.js";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Create = () => {
   const { data, setData, post, processing, errors } = useForm({
@@ -99,14 +101,28 @@ const Create = () => {
               ]}
             />
 
-            <InputField
-              label="Date of Birth"
-              required
-              type="date"
-              value={data.date_of_birth}
-              onChange={e => setData('date_of_birth', e.target.value)}
-              error={errors.date_of_birth}
-            />
+            <div>
+              <label className="mb-2.5 block text-black font-medium">
+                Date of Birth <span className="text-red-500">*</span>
+              </label>
+              <DatePicker
+                selected={data.date_of_birth ? new Date(data.date_of_birth) : null}
+                onChange={(date) =>
+                  setData('date_of_birth', date ? date.toISOString().split('T')[0] : '')
+                }
+                dateFormat="dd-MM-yyyy"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={new Date()}
+                placeholderText="Select date of birth"
+                className="w-full rounded-lg border-[1.5px] border-slate-300 bg-white py-3 px-5 font-medium outline-none transition focus:border-indigo-600"
+                wrapperClassName="w-full"
+              />
+              {errors.date_of_birth && (
+                <p className="mt-1 text-sm text-red-500">{errors.date_of_birth}</p>
+              )}
+            </div>
 
             <SelectField
               label="Blood Group"

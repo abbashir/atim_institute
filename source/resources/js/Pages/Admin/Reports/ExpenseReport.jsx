@@ -37,8 +37,8 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
         <div className="flex flex-wrap items-end gap-4">
 
           {/* From Date */}
-          <div className="w-full md:w-52">
-            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">
+          <div>
+            <label className="mb-2.5 block text-black font-medium">
               From Date
             </label>
             <DatePicker
@@ -47,16 +47,20 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
               selectsStart
               startDate={toDate(filters.from_date)}
               endDate={toDate(filters.to_date)}
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
               maxDate={new Date()}
               dateFormat="dd-MM-yyyy"
-              placeholderText="From date"
-              className="w-full rounded border border-slate-200 py-2 px-3 text-sm focus:border-rose-500 outline-none transition-all"
+              placeholderText="Select from date"
+              className="w-full rounded border border-slate-200 bg-white py-2 px-3 text-sm outline-none transition focus:border-indigo-600"
+              wrapperClassName="w-full"
             />
           </div>
 
           {/* To Date */}
-          <div className="w-full md:w-52">
-            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">
+          <div>
+            <label className="mb-2.5 block text-black font-medium">
               To Date
             </label>
             <DatePicker
@@ -66,10 +70,14 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
               startDate={toDate(filters.from_date)}
               endDate={toDate(filters.to_date)}
               minDate={toDate(filters.from_date)}
-              
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              maxDate={new Date()}
               dateFormat="dd-MM-yyyy"
-              placeholderText="To date"
-              className="w-full rounded border border-slate-200 py-2 px-3 text-sm focus:border-rose-500 outline-none transition-all"
+              placeholderText="Select to date"
+              className="w-full rounded border border-slate-200 bg-white py-2 px-3 text-sm outline-none transition focus:border-indigo-600"
+              wrapperClassName="w-full"
             />
           </div>
 
