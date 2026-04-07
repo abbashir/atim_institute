@@ -4,9 +4,18 @@ import { Head, router } from '@inertiajs/react';
 import { TrendingDown, Calendar, Printer, FilterX } from 'lucide-react';
 import Table from "@/Components/Admin/Common/Table.jsx";
 import Pagination from "@/Components/Admin/Common/Pagination.jsx";
-import {formatAmount} from "@/Utils/format.js";
+import { formatAmount } from "@/Utils/format.js";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { parse, format } from 'date-fns';
 
 export default function ExpenseReport({ expenses, total_expense, filters }) {
+
+  // Convert "dd-MM-yyyy" string → Date object (or null)
+  const toDate = (str) => (str ? parse(str, 'dd-MM-yyyy', new Date()) : null);
+
+  // Convert Date object → "dd-MM-yyyy" string (for Inertia/backend)
+  const toStr = (date) => (date ? format(date, 'dd-MM-yyyy') : '');
 
   const handleFilter = (key, value) => {
     router.get(route('admin.reports.expenses'),
@@ -16,8 +25,6 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
   };
 
   const showAllRecords = () => {
-    // Navigates without date parameters to trigger "all" logic if you modify controller,
-    // or just pick a very wide range.
     router.get(route('admin.reports.expenses'), { from_date: '', to_date: '' });
   };
 
@@ -28,31 +35,51 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
       {/* Date Chooser Section */}
       <div className="mb-6 rounded-sm border border-slate-200 bg-white p-5 shadow-sm no-print">
         <div className="flex flex-wrap items-end gap-4">
+
+          {/* From Date */}
           <div className="w-full md:w-52">
-            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">From Date</label>
-            <input
-              type="date"
-              value={filters.from_date || ''}
-              onChange={e => handleFilter('from_date', e.target.value)}
-              className="w-full rounded border border-slate-200 py-2 px-3 text-sm focus:border-rose-500 outline-none transition-all"
-            />
-          </div>
-          <div className="w-full md:w-52">
-            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">To Date</label>
-            <input
-              type="date"
-              value={filters.to_date || ''}
-              onChange={e => handleFilter('to_date', e.target.value)}
+            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">
+              From Date
+            </label>
+            <DatePicker
+              selected={toDate(filters.from_date)}
+              onChange={(date) => handleFilter('from_date', toStr(date))}
+              selectsStart
+              startDate={toDate(filters.from_date)}
+              endDate={toDate(filters.to_date)}
+              maxDate={new Date()}
+              dateFormat="dd-MM-yyyy"
+              placeholderText="From date"
               className="w-full rounded border border-slate-200 py-2 px-3 text-sm focus:border-rose-500 outline-none transition-all"
             />
           </div>
 
+          {/* To Date */}
+          <div className="w-full md:w-52">
+            <label className="mb-2 block text-xs font-bold uppercase text-slate-500 tracking-tight">
+              To Date
+            </label>
+            <DatePicker
+              selected={toDate(filters.to_date)}
+              onChange={(date) => handleFilter('to_date', toStr(date))}
+              selectsEnd
+              startDate={toDate(filters.from_date)}
+              endDate={toDate(filters.to_date)}
+              minDate={toDate(filters.from_date)}
+              
+              dateFormat="dd-MM-yyyy"
+              placeholderText="To date"
+              className="w-full rounded border border-slate-200 py-2 px-3 text-sm focus:border-rose-500 outline-none transition-all"
+            />
+          </div>
+
+          {/* Action Buttons */}
           <div className="flex gap-2">
             <button
               onClick={() => {
                 const params = new URLSearchParams({
                   from_date: filters.from_date || '',
-                  to_date:   filters.to_date || '',
+                  to_date:   filters.to_date   || '',
                 });
                 window.open(route('admin.reports.expenses.print') + '?' + params.toString(), '_blank');
               }}
@@ -67,6 +94,7 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
               <FilterX size={18} /> Clear
             </button>
           </div>
+
         </div>
       </div>
 
@@ -87,6 +115,7 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
         </div>
       </div>
 
+      {/* Expense Table */}
       <Table
         columns={[
           { label: 'ID' },
@@ -115,9 +144,11 @@ export default function ExpenseReport({ expenses, total_expense, filters }) {
         ))}
       </Table>
 
+      {/* Pagination */}
       <div className="mt-6 no-print">
         <Pagination data={expenses} filters={filters} routeName='admin.reports.expenses' />
       </div>
+
     </AdminLayout>
   );
 }
