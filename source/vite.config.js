@@ -16,7 +16,10 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: 'resources/js/app.jsx',
+             input: [
+                'resources/css/app.css',  // ← must be here
+                'resources/js/app.jsx',
+            ],
             refresh: [
                 'resources/routes/**',
                 'routes/**',
