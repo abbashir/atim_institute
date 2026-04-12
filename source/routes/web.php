@@ -17,6 +17,31 @@ use App\Http\Controllers\ProfileController;
 
 use Illuminate\Support\Facades\Artisan;
 
+Route::get('/fix-storage', function () {
+    $target = '/home/dsalamfo/public_html/app/storage/app/public';
+    $link   = '/home/dsalamfo/public_html/storage';
+
+    // Remove old wrong symlink
+    if (is_link($link) || file_exists($link)) {
+        unlink($link);
+    }
+
+    symlink($target, $link);
+
+    return 'Done! ' . $link . ' → ' . $target;
+});
+
+
+Route::get('/check-storage', function () {
+    $path = '/home/dsalamfo/public_html/app/storage/app/public/students';
+    $files = glob($path . '/*.webp');
+    return [
+        'target_exists' => is_dir($path),
+        'files_found'   => $files,
+        'link_target'   => readlink('/home/dsalamfo/public_html/storage'),
+    ];
+});
+
 Route::get('/clear', function () {
 
   try {
