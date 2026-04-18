@@ -37,7 +37,7 @@
 
                 {{-- Submit Button --}}
                 <div class="pt-4">
-                    <button type="submit"
+                    <button type="button"
                             class="w-full bg-[#c59436] hover:bg-[#b0832d] text-white py-5 rounded-xl font-bold text-lg shadow-lg transition-all active:scale-[0.98] duration-300">
                         বার্তা পাঠান
                     </button>
