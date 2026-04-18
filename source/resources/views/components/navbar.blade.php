@@ -2,7 +2,7 @@
         x-data="{ scrolled: false, mobileMenuOpen: false }"
         @scroll.window="scrolled = (window.pageYOffset > 50)"
         class="fixed top-0 w-full z-50 transition-all duration-300 font-cairo">
-    <div
+    <!-- <div
         x-show="!scrolled"
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0"
@@ -17,7 +17,7 @@
                 <span class="text-[10px]">🌙</span> Donate Zakat / Sadaqah
             </a>
         </div>
-    </div>
+    </div> -->
 
     <div
             :class="scrolled ? 'bg-primary backdrop-blur-lg py-5 shadow-xl' : 'bg-primary py-5'"
@@ -29,20 +29,31 @@
                 <a href="/" class="flex items-center gap-2">
                     <div class="text-[#c59436] text-2xl">🌙</div>
                     <div class="font-bold text-xl tracking-tight">
-                        Darus Salam <span class="text-[#c59436]">Foundation</span>
+                        দারুস সালাম <span class="text-[#c59436]">ফাউন্ডেশন</span>
                     </div>
                 </a>
             </div>
 
             <div class="hidden lg:flex items-center space-x-8 text-[12px] font-medium uppercase tracking-wider">
-                @foreach(['Home', 'About Us', 'Our Mission', 'Sponsor an Orphan', 'Programs', 'Donate', 'Contact'] as $link)
-                    <a href="#{{ Str::slug($link) }}" class="text-white/80 hover:text-yellow-400 transition-colors">{{ $link }}</a>
+                @php
+                    $links = [
+                        'home' => 'হোম',
+                        'about-us' => 'আমাদের সম্পর্কে',
+                        'our-mission' => 'আমাদের লক্ষ্য',
+                        'sponsor-an-orphan' => 'এতিম স্পনসর',
+                        'programs' => 'প্রোগ্রামসমূহ',
+                        'donate' => 'দান করুন',
+                        'contact' => 'যোগাযোগ'
+                    ];
+                @endphp
+                @foreach($links as $id => $label)
+                    <a href="#{{ $id }}" class="text-white/80 hover:text-yellow-400 transition-colors">{{ $label }}</a>
                 @endforeach
             </div>
 
             <div class="flex items-center gap-4">
                 <a href="#" class="hidden md:block bg-[#c59436] hover:bg-[#b0832d] text-white px-6 py-2.5 rounded font-bold text-sm transition duration-300 shadow-md">
-                    Donate Now
+                    এখনই দান করুন
                 </a>
 
                 <button
@@ -68,17 +79,15 @@
             class="lg:hidden bg-emerald-deep/95 backdrop-blur-xl border-t border-white/10"
     >
         <div class="px-6 py-8 space-y-4">
-            @foreach(['Home', 'About Us', 'Our Mission', 'Sponsor an Orphan', 'Programs', 'Donate', 'Contact'] as $link)
-                <a @click="mobileMenuOpen = false" href="#{{ Str::slug($link) }}" class="block text-lg font-medium text-white/90 hover:text-yellow-400 border-b border-white/5 pb-2">{{ $link }}</a>
+            @foreach($links as $id => $label)
+                <a @click="mobileMenuOpen = false" href="#{{ $id }}" class="block text-lg font-medium text-white/90 hover:text-yellow-400 border-b border-white/5 pb-2">{{ $label }}</a>
             @endforeach
             <div class="pt-4">
-                <a href="#" class="block w-full text-center bg-[#c59436] text-white py-4 rounded-xl font-bold">Donate Now</a>
+                <a href="#" class="block w-full text-center bg-[#c59436] text-white py-4 rounded-xl font-bold">এখনই দান করুন</a>
             </div>
         </div>
     </div>
 </nav>
-
-<div class="h-24 md:h-32"></div>
 
 {{--<nav class="w-full z-50">--}}
 {{--    <div class="gradient-emerald text-white py-2 px-6 border-b border-white/10">--}}
