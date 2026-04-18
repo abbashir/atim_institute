@@ -1,64 +1,54 @@
 <nav
-        x-data="{ scrolled: false, mobileMenuOpen: false }"
-        @scroll.window="scrolled = (window.pageYOffset > 50)"
-        class="fixed top-0 w-full z-50 transition-all duration-300 font-cairo">
-    <!-- <div
-        x-show="!scrolled"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-full"
-        class="gradient-emerald text-white py-2 px-6 border-b border-white-400 hidden md:block">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <p class="text-[13px] italic font-light font-amiri">
-                "I and the one who cares for an orphan will be in Paradise like this."
-                <span class="text-yellow-500 ml-1">– Prophet Muhammad (SAW)</span>
-            </p>
-            <a href="#" class="bg-[#c59436] hover:bg-[#b0832d] text-white text-xs font-bold px-4 py-2 rounded flex items-center gap-2 transition duration-300">
-                <span class="text-[10px]">🌙</span> Donate Zakat / Sadaqah
-            </a>
-        </div>
-    </div> -->
+    x-data="{ scrolled: false, mobileMenuOpen: false }"
+    @scroll.window="scrolled = (window.pageYOffset > 50)"
+    class="fixed top-0 w-full z-50 transition-all duration-500 font-cairo">
 
     <div
-            :class="scrolled ? 'bg-primary backdrop-blur-lg py-5 shadow-xl' : 'bg-primary py-5'"
-            class="text-white px-6 transition-all duration-300 border-b border-white/5"
+        :class="scrolled ? 'bg-primary backdrop-blur-md py-3 shadow-2xl' : 'bg-primary py-3 md:py-5'"
+        class="text-white px-6 transition-all duration-300"
     >
         <div class="max-w-7xl mx-auto flex justify-between items-center">
 
+            {{-- Logo Section --}}
             <div class="flex items-center gap-2">
-                <a href="/" class="flex items-center gap-2">
-                    <div class="text-[#c59436] text-2xl">🌙</div>
-                    <div class="font-bold text-xl tracking-tight">
+                <a href="/" class="flex items-center gap-2 group">
+                    <div class="text-[#c59436] text-2xl transition-transform group-hover:scale-110">🌙</div>
+                    <div class="font-bold text-xl tracking-tight leading-none">
                         দারুস সালাম <span class="text-[#c59436]">ফাউন্ডেশন</span>
                     </div>
                 </a>
             </div>
 
-            <div class="hidden lg:flex items-center space-x-8 text-[12px] font-medium uppercase tracking-wider">
+            {{-- Desktop Navigation --}}
+            <div class="hidden lg:flex items-center space-x-6 text-[12px] font-bold uppercase tracking-[0.1em]">
                 @php
                     $links = [
                         'home' => 'হোম',
                         'about-us' => 'আমাদের সম্পর্কে',
                         'our-mission' => 'আমাদের লক্ষ্য',
                         'sponsor-an-orphan' => 'এতিম স্পনসর',
-                        'programs' => 'প্রোগ্রামসমূহ',
+                        'programs' => 'প্রভাব',
                         'donate' => 'দান করুন',
                         'contact' => 'যোগাযোগ'
                     ];
                 @endphp
                 @foreach($links as $id => $label)
-                    <a href="#{{ $id }}" class="text-white/80 hover:text-yellow-400 transition-colors">{{ $label }}</a>
+                    <a href="#{{ $id }}" class="text-white/70 hover:text-[#c59436] transition-colors duration-300 relative group">
+                        {{ $label }}
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#c59436] transition-all duration-300 group-hover:w-full"></span>
+                    </a>
                 @endforeach
             </div>
 
+            {{-- CTA & Mobile Toggle --}}
             <div class="flex items-center gap-4">
-                <a href="#" class="hidden md:block bg-[#c59436] hover:bg-[#b0832d] text-white px-6 py-2.5 rounded font-bold text-sm transition duration-300 shadow-md">
+                <a href="#donate" class="hidden md:block bg-[#c59436] hover:bg-[#b0832d] text-white px-5 py-2.5 rounded-lg font-black text-[12px] uppercase tracking-wider transition-all duration-300 shadow-lg shadow-[#c59436]/20 active:scale-95">
                     এখনই দান করুন
                 </a>
 
                 <button
-                        @click="mobileMenuOpen = !mobileMenuOpen"
-                        class="lg:hidden p-2 text-white hover:text-yellow-500 focus:outline-none"
+                    @click="mobileMenuOpen = !mobileMenuOpen"
+                    class="lg:hidden p-2 text-white hover:text-[#c59436] transition-colors focus:outline-none"
                 >
                     <svg x-show="!mobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     <svg x-show="mobileMenuOpen" x-cloak class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -67,64 +57,28 @@
         </div>
     </div>
 
+    {{-- Mobile Menu (Transparent Border Removed) --}}
     <div
-            x-show="mobileMenuOpen"
-            x-cloak
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 -translate-y-5"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-5"
-            class="lg:hidden bg-emerald-deep/95 backdrop-blur-xl border-t border-white/10"
+        x-show="mobileMenuOpen"
+        x-cloak
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 -translate-y-full"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        class="lg:hidden bg-primary shadow-2xl overflow-hidden"
     >
-        <div class="px-6 py-8 space-y-4">
+        <div class="px-6 py-8 space-y-1">
             @foreach($links as $id => $label)
-                <a @click="mobileMenuOpen = false" href="#{{ $id }}" class="block text-lg font-medium text-white/90 hover:text-yellow-400 border-b border-white/5 pb-2">{{ $label }}</a>
+                <a @click="mobileMenuOpen = false" href="#{{ $id }}" 
+                   class="block py-3 px-4 rounded-xl text-base font-bold text-white/80 hover:text-white hover:bg-white/5 transition-all">
+                    {{ $label }}
+                </a>
             @endforeach
-            <div class="pt-4">
-                <a href="#" class="block w-full text-center bg-[#c59436] text-white py-4 rounded-xl font-bold">এখনই দান করুন</a>
+            <div class="pt-6 px-4">
+                <a href="#donate" @click="mobileMenuOpen = false" class="block w-full text-center bg-[#c59436] text-white py-4 rounded-xl font-black uppercase tracking-widest shadow-lg">
+                    এখনই দান করুন
+                </a>
             </div>
         </div>
     </div>
 </nav>
-
-{{--<nav class="w-full z-50">--}}
-{{--    <div class="gradient-emerald text-white py-2 px-6 border-b border-white/10">--}}
-{{--        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">--}}
-{{--            <p class="text-[13px] md:text-sm italic font-light text-center md:text-left">--}}
-{{--                "I and the one who cares for an orphan will be in Paradise like this."--}}
-{{--                <span class="text-yellow-500 ml-1">– Prophet Muhammad (SAW)</span>--}}
-{{--            </p>--}}
-{{--            <a href="#" class="bg-[#c59436] hover:bg-[#b0832d] text-white text-xs font-bold px-4 py-2 rounded flex items-center gap-2 transition duration-300">--}}
-{{--                <span class="text-[10px]">🌙</span> Donate Zakat / Sadaqah--}}
-{{--            </a>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div class="sticky top-0 bg-primary text-white px-6 py-4 shadow-lg">--}}
-{{--        <div class="max-w-7xl mx-auto flex justify-between items-center">--}}
-
-{{--            <div class="flex items-center gap-2">--}}
-{{--                <div class="text-[#c59436] text-2xl">🌙</div>--}}
-{{--                <div class="font-bold text-xl tracking-tight">--}}
-{{--                    Al-Yateem <span class="text-[#c59436]">Foundation</span>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="hidden lg:flex items-center space-x-8 text-[13px] font-medium uppercase tracking-wider">--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Home</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">About Us</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Our Mission</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Sponsor an Orphan</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Programs</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Donate</a>--}}
-{{--                <a href="#" class="hover:text-yellow-400 transition">Contact</a>--}}
-{{--            </div>--}}
-
-{{--            <a href="#" class="bg-[#c59436] hover:bg-[#b0832d] text-white px-6 py-2.5 rounded font-bold text-sm transition duration-300 shadow-md">--}}
-{{--                Donate Now--}}
-{{--            </a>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</nav>--}}

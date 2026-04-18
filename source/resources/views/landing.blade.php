@@ -6,72 +6,72 @@
     @include('components.hero')
 
     {{-- 3. Mission / Features Section --}}
-    <section id="our-mission" class="py-24 bg-[#eef6f3] overflow-hidden">
+    <section id="our-mission" class="py-16 bg-[#fdfbf7] overflow-hidden">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
                 {{-- Left Content --}}
-                <div class="lg:w-1/2">
-                    <span class="text-[#c59436] font-bold tracking-[0.1em] uppercase text-sm">আমাদের লক্ষ্য</span>
-                    <h2 class="text-4xl md:text-[42px] font-bold text-[#1a4d3a] mt-3 leading-tight">
-                        কুরআন ও সুন্নাহর নির্দেশনায়
-                    </h2>
+                <div class="lg:w-5/12 space-y-6">
+                    <div>
+                        <span class="text-[#c59436] font-bold tracking-[0.2em] uppercase text-[10px] block mb-2">আমাদের লক্ষ্য</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-[#1a4d3a] leading-tight tracking-tight">
+                            কুরআন ও সুন্নাহর নির্দেশনায় <br class="hidden md:block"> সেবা ও শিক্ষা
+                        </h2>
+                        <div class="w-16 h-1 bg-[#c59436] mt-4 rounded-full"></div>
+                    </div>
 
-                    {{-- Quote Box --}}
-                    <div class="mt-8 relative p-8 bg-[#dbeae4] rounded-2xl border-l-[6px] border-[#c59436]">
-                        <blockquote class="italic text-[#2d5a4a] text-lg leading-relaxed">
-                            "আপনি কি তাকে দেখেছেন, যে বিচার দিবসকে অস্বীকার করে? সে তো সেই ব্যক্তি যে এতিমকে গলা ধাক্কা দেয়।"
-                            <span class="block mt-4 font-semibold text-sm not-italic text-[#4a7a6a]">— সূরা আল-মাউন (১০৭:১-২)</span>
+                    {{-- Quote Box - Refined --}}
+                    <div class="relative p-6 md:p-8 bg-[#1a4d3a]/5 rounded-[32px] border-l-4 border-[#c59436]">
+                        <blockquote class="italic text-[#1a4d3a] text-base md:text-lg leading-relaxed">
+                            "আপনি কি তাকে দেখেছেন, যে বিচার দিবসকে অস্বীকার করে? সে তো সেই ব্যক্তি যে এতিমকে গলা ধাক্কা দেয়।"
+                            <footer class="block mt-4 font-bold text-[11px] not-italic text-[#4a7a6a] uppercase tracking-widest">
+                                — সূরা আল-মাউন (১০৭:১-২)
+                            </footer>
                         </blockquote>
                     </div>
 
-                    <p class="mt-8 text-[#4a7a6a] leading-relaxed text-[17px]">
-                        আমাদের প্রতিষ্ঠানটি এতিম শিশুদের সামগ্রিক যত্ন প্রদানের জন্য নিবেদিত, যেখানে তাদের উজ্জ্বল ভবিষ্যতের জন্য ইসলামিক শিক্ষার সাথে আধুনিক শিক্ষার সমন্বয় করা হয়েছে। প্রতিটি শিশু ভালোবাসা, নির্দেশনা এবং সুযোগ পাওয়ার যোগ্য।
+                    <p class="text-[#4a7a6a] leading-relaxed text-[15px] md:text-base font-medium opacity-90">
+                        আমাদের প্রতিষ্ঠানটি এতিম শিশুদের সামগ্রিক যত্ন প্রদানের জন্য নিবেদিত, যেখানে তাদের উজ্জ্বল ভবিষ্যতের জন্য ইসলামিক শিক্ষার সাথে আধুনিক শিক্ষার সমন্বয় করা হয়েছে।
                     </p>
                 </div>
 
                 {{-- Right Grid Features --}}
-                <div class="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
 
-                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-50 flex flex-col items-start transition-transform hover:-translate-y-1">
-                        <div class="w-14 h-14 bg-[#1e6b4e] text-white rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
+                    {{-- Feature 1 --}}
+                    <div class="group p-8 bg-white rounded-[28px] border border-gray-100 shadow-xl shadow-gray-200/40 transition-all hover:border-[#c59436]/30">
+                        <div class="w-12 h-12 bg-[#1a4d3a] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#1a4d3a]/20 group-hover:-translate-y-1 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         </div>
                         <h3 class="text-lg font-bold text-[#1a4d3a]">ইসলামিক শিক্ষা</h3>
-                        <p class="mt-3 text-sm text-[#5a8a7a] leading-relaxed">প্রতিটি শিশুর জন্য কুরআন, হাদিস এবং আরবি ভাষাসহ ব্যাপক ইসলামিক শিক্ষা।</p>
+                        <p class="mt-2 text-sm text-[#5a8a7a] leading-relaxed">কুরআন, হাদিস এবং আরবি ভাষাসহ ব্যাপক ইসলামিক শিক্ষার সমন্বয়।</p>
                     </div>
 
-                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-50 flex flex-col items-start transition-transform hover:-translate-y-1">
-                        <div class="w-14 h-14 bg-[#1e6b4e] text-white rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
-                            </svg>
+                    {{-- Feature 2 --}}
+                    <div class="group p-8 bg-white rounded-[28px] border border-gray-100 shadow-xl shadow-gray-200/40 transition-all hover:border-[#c59436]/30">
+                        <div class="w-12 h-12 bg-[#1a4d3a] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#1a4d3a]/20 group-hover:-translate-y-1 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
                         </div>
                         <h3 class="text-lg font-bold text-[#1a4d3a]">হিফজ প্রোগ্রাম</h3>
-                        <p class="mt-3 text-sm text-[#5a8a7a] leading-relaxed">দক্ষ শিক্ষকদের মাধ্যমে শিশুদের পবিত্র কুরআন মুখস্থ করতে সাহায্য করার জন্য নিবেদিত হিফজ-উল-কুরআন প্রোগ্রাম।</p>
+                        <p class="mt-2 text-sm text-[#5a8a7a] leading-relaxed">দক্ষ শিক্ষকদের মাধ্যমে নিবেদিত হিফজ-উল-কুরআন প্রোগ্রাম।</p>
                     </div>
 
-                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-50 flex flex-col items-start transition-transform hover:-translate-y-1">
-                        <div class="w-14 h-14 bg-[#1e6b4e] text-white rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                            </svg>
+                    {{-- Feature 3 --}}
+                    <div class="group p-8 bg-white rounded-[28px] border border-gray-100 shadow-xl shadow-gray-200/40 transition-all hover:border-[#c59436]/30">
+                        <div class="w-12 h-12 bg-[#1a4d3a] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#1a4d3a]/20 group-hover:-translate-y-1 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         </div>
                         <h3 class="text-lg font-bold text-[#1a4d3a]">খাদ্য ও বাসস্থান</h3>
-                        <p class="mt-3 text-sm text-[#5a8a7a] leading-relaxed">নিরাপদ, পরিচ্ছন্ন আবাসন এবং পুষ্টিকর খাবার নিশ্চিত করে যে প্রতিটি এতিম মর্যাদা ও আরামের সাথে বসবাস করে।</p>
+                        <p class="mt-2 text-sm text-[#5a8a7a] leading-relaxed">মর্যাদা ও আরামের সাথে নিরাপদ আবাসন এবং পুষ্টিকর খাবার নিশ্চিতকরণ।</p>
                     </div>
 
-                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-50 flex flex-col items-start transition-transform hover:-translate-y-1">
-                        <div class="w-14 h-14 bg-[#1e6b4e] text-white rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
+                    {{-- Feature 4 --}}
+                    <div class="group p-8 bg-white rounded-[28px] border border-gray-100 shadow-xl shadow-gray-200/40 transition-all hover:border-[#c59436]/30">
+                        <div class="w-12 h-12 bg-[#1a4d3a] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#1a4d3a]/20 group-hover:-translate-y-1 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                         </div>
-                        <h3 class="text-lg font-bold text-[#1a4d3a]">নৈতিক উন্নয়ন</h3>
-                        <p class="mt-3 text-sm text-[#5a8a7a] leading-relaxed">ইসলামিক মূল্যবোধের ভিত্তিতে চরিত্র গঠন, সহানুভূতিশীল এবং দায়িত্বশীল মানুষ হিসেবে গড়ে তোলা।</p>
+                        <h3 class="text-lg font-bold text-[#1a4d3a]">নৈতিক উন্নয়ন</h3>
+                        <p class="mt-2 text-sm text-[#5a8a7a] leading-relaxed">ইসলামিক মূল্যবোধের ভিত্তিতে সহমর্মী মানুষ হিসেবে গড়ে তোলা।</p>
                     </div>
 
                 </div>
@@ -80,7 +80,7 @@
     </section>
 
     {{-- 4. Orphan Profiles Grid --}}
-    <section id="sponsor-an-orphan" class="py-24 gradient-emerald">
+    <section id="sponsor-an-orphan" class="py-16 gradient-emerald">
         <div class="max-w-7xl mx-auto px-6">
             {{-- Section Header --}}
             <div class="text-center mb-16">
