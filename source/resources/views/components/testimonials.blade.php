@@ -3,8 +3,8 @@
 
         {{-- Section Header --}}
         <div class="text-center mb-12">
-            <span class="text-[#c59436] font-bold tracking-[0.2em] uppercase text-[10px] mb-2 block">Testimonials</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-[#1a4d3a]">Words from Our Donors</h2>
+            <span class="text-[#c59436] font-bold tracking-[0.2em] uppercase text-[10px] mb-2 block">প্রশংসাপত্র</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-[#1a4d3a]">আমাদের দাতাদের কথা</h2>
             <div class="w-16 h-1 bg-[#c59436] mx-auto mt-4 rounded-full"></div>
         </div>
 
@@ -17,12 +17,12 @@
                         <div class="text-[#c59436] text-4xl mb-6 font-serif">"</div>
 
                         <p class="text-[#4a7a6a] italic text-lg leading-relaxed mb-8">
-                            Darus Salam Foundation has been a trusted channel for my Zakat contributions. Seeing the children flourish through their Hifz program fills my heart with joy.
+                            দারুস সালাম ফাউন্ডেশন আমার যাকাত প্রদানের জন্য একটি বিশ্বস্ত মাধ্যম। তাদের হিফজ প্রোগ্রামের মাধ্যমে শিশুদের উন্নতি দেখে আমার হৃদয় আনন্দে ভরে ওঠে।
                         </p>
 
                         <div class="space-y-1">
-                            <h4 class="text-[#1a4d3a] font-bold text-lg">Dr. Rashid Hossain</h4>
-                            <p class="text-[#c59436] text-xs font-medium uppercase tracking-widest">Regular Zakat Donor</p>
+                            <h4 class="text-[#1a4d3a] font-bold text-lg">ডাঃ রাশিদ হোসেন</h4>
+                            <p class="text-[#c59436] text-xs font-medium uppercase tracking-widest">নিয়মিত যাকাত দাতা</p>
                         </div>
                     </div>
                 </div>
@@ -32,12 +32,12 @@
                         <div class="text-[#c59436] text-4xl mb-6 font-serif">"</div>
 
                         <p class="text-[#4a7a6a] italic text-lg leading-relaxed mb-8">
-                            Their transparency in orphan sponsorship is remarkable. I receive regular updates about the child I support, which makes the bond feel very real.
+                            এতিম স্পনসরশিপে তাদের স্বচ্ছতা অসাধারণ। আমি যে শিশুটিকে সহায়তা করি তার সম্পর্কে নিয়মিত আপডেট পাই, যা আমাদের বন্ধনটিকে আরও গভীর করে।
                         </p>
 
                         <div class="space-y-1">
-                            <h4 class="text-[#1a4d3a] font-bold text-lg">Sarah Al-Mansur</h4>
-                            <p class="text-[#c59436] text-xs font-medium uppercase tracking-widest">Orphan Sponsor</p>
+                            <h4 class="text-[#1a4d3a] font-bold text-lg">সারাহ আল-মনসুর</h4>
+                            <p class="text-[#c59436] text-xs font-medium uppercase tracking-widest">এতিম স্পনসর</p>
                         </div>
                     </div>
                 </div>

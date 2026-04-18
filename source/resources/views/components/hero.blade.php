@@ -1,4 +1,4 @@
-<section id="home" class="relative min-h-[750px] flex items-center justify-center pt-32 pb-48 overflow-hidden">
+<section id="home" class="relative min-h-[600px] md:min-h-[750px] flex items-center justify-center pt-32 pb-32 md:pb-48 overflow-hidden">
     <div class="absolute inset-0 z-0">
         <img src="/images/hero-bg.jpg" class="w-full h-full object-cover" alt="Orphan children smiling">
         <div class="absolute inset-0 bg-green-950/70 mix-blend-multiply"></div>
@@ -10,25 +10,25 @@
             <div class="text-yellow-500 text-3xl">🌙</div>
         </div>
 
-        <h1 class="text-5xl md:text-7xl font-bold leading-tight tracking-tight">
-            Support an Orphan.<br>
-            <span class="text-yellow-500">Earn Sadaqah Jariyah.</span>
+        <h1 class="text-4xl md:text-7xl font-bold leading-tight tracking-tight">
+            একটি এতিম শিশুকে সহায়তা করুন।<br>
+            <span class="text-yellow-500">সাদাকাহ জারিয়াহ অর্জন করুন।</span>
         </h1>
 
-        <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed font-light italic">
-            Your Zakat and Sadaqah can transform the life of an orphan child. Provide them with education, shelter, and a future filled with hope.
+        <p class="mt-6 md:mt-8 text-base md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed font-light italic px-4 md:px-0">
+            আপনার যাকাত এবং সাদাকাহ একটি এতিম শিশুর জীবন বদলে দিতে পারে। তাদের শিক্ষা, বাসস্থান এবং আশায় ভরা ভবিষ্যৎ নিশ্চিত করুন।
         </p>
 
         <p class="mt-6 text-sm md:text-base text-gray-300 italic opacity-80">
-            "And they give food in spite of love for it to the needy, the orphan, and the captive." — Quran 76:8
+            "তারা আল্লাহর ভালোবাসায় অভাবগ্রস্ত, এতিম ও বন্দীদের খাবার দান করে।" — কুরআন ৭৬:৮
         </p>
 
         <div class="mt-12 flex flex-col sm:flex-row justify-center items-center gap-6">
             <a href="#" class="w-full sm:w-auto bg-[#c59436] hover:bg-[#b0832d] text-white px-10 py-4 rounded-md font-bold text-lg shadow-xl transition transform hover:-translate-y-1">
-                Donate Zakat
+                যাকাত দিন
             </a>
             <a href="#" class="w-full sm:w-auto border-2 border-white/60 hover:border-white hover:bg-white/10 text-white px-10 py-4 rounded-md font-bold text-lg transition transform hover:-translate-y-1">
-                Sponsor Monthly
+                মাসিক স্পনসর
             </a>
         </div>
     </div>
